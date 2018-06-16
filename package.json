@@ -1,0 +1,52 @@
+{
+  "name": "syzljh",
+  "version": "1.2.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=development electron .",
+    "build": "cross-env NODE_ENV=production electron .",
+    "dist:win64": "cross-env NODE_ENV=production electron-builder --win --x64"
+  },
+  "author": "",
+  "license": "ISC",
+  "build": {
+    "productName": "神中科技共享平台",
+    "appId": "test",
+    "copyright": "Copyright © year ${author}",
+    "directories": {
+      "output": "build"
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://electron.test.upcdn.net/"
+      }
+    ],
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "runAfterFinish": true,
+      "installerIcon": "static/images/icon.ico"
+    },
+    "dmg": {
+      "background": "static/images/background.png"
+    },
+    "win": {
+      "artifactName": "${productName}_setup_${version}.${ext}",
+      "icon": "static/images/icon.ico"
+    }
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "electron": "^2.0.2",
+    "electron-builder": "^20.15.1"
+  },
+  "dependencies": {
+    "electron-updater": "^2.21.10"
+  }
+}
