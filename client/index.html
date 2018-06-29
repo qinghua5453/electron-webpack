@@ -1,37 +1,17 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-    <div>
-      上传图片demo
-      <input type="file" id="inputFile">
-      <img sr="" id="renderImg" alt="这是一张本地获取的图片">
-    </div>
-    <div>
-      获取本地图片demo
-      <img src="../static/images/icon.ico" id="getLocalImg" alt="获取本地图片demo">
-    </div>
-    <script>
-      // You can also require other files to run in this process
 
-      var inputFile = document.getElementById('inputFile')
-      var renderImg = document.getElementById('renderImg')
-      var getLocalImg = document.getElementById('getLocalImg')
-      inputFile.onchange = function() {
-        console.log(inputFile.files)
-        console.log('inputFile.files.path', inputFile.files[0])
-        renderImg.setAttribute('src', inputFile.files[0].path)
-      }
-    </script>
+<head>
+    <title>首营资料共享平台</title>
+    <style>
+    </style>
+</head>
+
+<body>
+    <div id="syjh">
+    </div>
+<script src="./asset/build/app.ae4f3d7.bundle.js"></script>
 </body>
 <script src="./renderer.js"></script>
-<script src="asset/build/bundle.js"></script>
+</html>
 </html>

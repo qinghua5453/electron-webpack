@@ -1,6 +1,5 @@
 'use strict'
 const fs = require('fs')
-console.log('modify html bundles js')
 let getManifest = () => {
     let mfPath = './asset/build/manifest.json'
 
@@ -10,33 +9,33 @@ let getManifest = () => {
                 console.log('err', err)
                 reject(err)
             } else {
-                console.log('data', data)
                 resolve(JSON.parse(data))
+                // console.log('data', JSON.parse(data))
             }
         })
     })
 }
 
 let modifyHtmlStrProd = (data, bundle) => {
+    // console.log('proData', data)
+    // console.log('probundle', bundle)
     if(bundle.js) {
-        if(/<script.*\.bundle\.js"><\/script>/i.test(data)) {
-            data = data.replace(/<script.*\.bundle\.js"><\/script>/i, '<script src="' + bundle.js + '"></script>')
-        } else {
-            data = data.replace(/<\/body>/i, '<script src="' + bundle.js + '"></script>\r\n</body>')
-        }
+        data = data.replace(/<script.*\.bundle\.js"><\/script>/i, '<script src="' + bundle.js + '"></script>')
     }
-    if(bundle.css) {
-        if(bundle.css && /<link rel="stylesheet".*\.bundle\.css"\/?>/i.test(data)) {
-            data = data.replace(/<link rel="stylesheet".*\.bundle\.css"\/?>/i, '<link rel="stylesheet" href="' + bundle.css + '">')
-        } else {
-            data = data.replace(/<\/head>/i, '<link rel="stylesheet" href="' + bundle.css + '">\r\n</head>')
-        }
-    }
+    // if(bundle.css) {
+    //     if(bundle.css && /<link rel="stylesheet".*\.bundle\.css"\/?>/i.test(data)) {
+    //         data = data.replace(/<link rel="stylesheet".*\.bundle\.css"\/?>/i, '<link rel="stylesheet" href="' + bundle.css + '">')
+    //     } else {
+    //         data = data.replace(/<\/head>/i, '<link rel="stylesheet" href="' + bundle.css + '">\r\n</head>')
+    //     }
+    // }
     return data
 }
 
 let modifyHtmlStrDev = (data, bundle) => {
-    if(/<script.*\.bundle\.js"><\/script>/i.test(data)) {
+    // console.log('data', data)
+    // console.log('bundle', bundle)
+    if(/bundle\.js"><\/script>/i.test(data)) {
         data = data.replace(/<script.*\.bundle\.js"><\/script>/i, '<script src="' + bundle.js + '"></script>')
     } else {
         throw 'path of script bundle.js need to be added to html file'
@@ -46,6 +45,7 @@ let modifyHtmlStrDev = (data, bundle) => {
 
 let updateProdHTMLPages = () => {
     getManifest().then(data => {
+        // console.log('data---', data)
         let bundleMap = {}
         for(let key in data) {
             if(key.indexOf('bundle') > -1) {
@@ -71,6 +71,7 @@ let updateProdHTMLPages = () => {
                 }
             }
         }
+        // console.log('bundleMap-----', bundleMap)
         for(let key in bundleMap) {
             let filePath = './index.html'
             fs.readFile(filePath, (err, data) => {
@@ -96,7 +97,7 @@ let updateProdHTMLPages = () => {
 let setDevHTMLPages = () => {
 
     let bundleMap = {
-        js: '/asset/build/bundle.js',
+        js: 'http://127.0.0.1:3000/asset/build/app.bundle.js',
     }
     let filePath = './index.html'
     fs.readFile(filePath, (err, data) => {

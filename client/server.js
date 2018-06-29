@@ -1,14 +1,15 @@
+require('./modify.html.bundles')
 const webpack = require('webpack')
 const path = require('path')
 const WebpackDevServer = require('webpack-dev-server')
-const configDev = require("./webpack.config.dev.js")
-const compiler = webpack(configDev)
+const config = require("./webpack.config.js")
+const compiler = webpack(config)
 const server = new WebpackDevServer(compiler,{
-    contentBase: path.resolve(__dirname),
-    historyApiFallback: true,//不跳转
     hot: true,
-    inline: true,//实时刷新
-    publicPath: "/"
+	historyApiFallback: true,
+    disableHostCheck: true,
+    inline: true,
+    publicPath: "/asset/build/" // 对应webpack output publicPath
 })
 
 server.listen(3000,function(err){

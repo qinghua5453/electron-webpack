@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>首营资料共享平台</title>
+    <style>
+      html, body {        
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+      }
+      #nav-body-views{
+        flex: 1;
+      }
+      
+    </style>
+</head>
+
+<body>
+    <div id="nav-body-ctrls"></div>
+    <div id="nav-body-tabs"></div>
+    <div id="nav-body-views"></div>
+    <script>
+        /* production */
+        const enav = new (require('electron-navigation'))({
+            showAddTabButton: false,
+            showUrlBar: false,
+        })
+
+        enav.newTab('http://192.168.2.146:9000')
+        // // 调用webview 的debug模式
+        // enav.openDevTools()
+    </script>
+</body>
+
+</html>
