@@ -1,17 +1,40 @@
 <template>
 	<div id="syjh">
-	   这个一个本地页面
-	   <button @click="gotoWebview">gotoWebview</button>
+		<Modal
+			v-model="modal1"
+			title="Common Modal dialog box title"
+			@on-ok="ok"
+			@on-cancel="cancel">
+			<p>Content of dialog</p>
+			<p>Content of dialog</p>
+			<p>Content of dialog</p>
+		</Modal>
 	</div>
 </template>
 
 <script>
  const { ipcRenderer } = require('electron')
+ import { Button, Modal } from 'iview';
  export default {
 	 name: 'main-vue',
+	 components: {
+        Button,
+		Modal
+	 },
+	 data () {
+          return {
+			   modal1: true
+		  }
+	 },
 	 methods: {
-		 gotoWebview: function() {
+		 gotoWebview () {
             ipcRenderer.send('go-to-webview')
+		 },
+		 ok () {
+            this.$Message.info('Clicked ok');
+		 },
+		 cancel () {
+			this.$Message.info('Clicked cancel');
 		 }
 	 }
  }

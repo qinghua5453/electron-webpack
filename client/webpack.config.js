@@ -1,6 +1,7 @@
 'use strict'
 const path = require('path')
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+// const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const webpackManifestPlugin = require('webpack-manifest-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
@@ -9,10 +10,16 @@ console.log('process.env.NODE_ENV', process.env.NODE_ENV)
 
 let getPlugin = () => {
   let plugins = [new VueLoaderPlugin()]
-  plugins.push(new MiniCssExtractPlugin({
-      filename: isProduction ? '[name].[hash:7].css' : '[name].css',
-      chunkFilename: isProduction ? '[id].[hash:7].css' : '[id].css',
-    }))
+  // plugins.push(new MiniCssExtractPlugin({
+  //     filename: isProduction ? '[name].[hash:7].css' : '[name].css',
+  //     chunkFilename: isProduction ? '[id].[hash:7].css' : '[id].css',
+  // }))
+  // 抽取 css 文件
+  plugins.push(new ExtractTextPlugin({
+    filename: isProduction ? '[name].[hash:7].bundle.css' : '[name].bundle.css',
+    disable: false,
+    allChunks: false
+  }))
   if(isProduction) {
     plugins.push(new CleanWebpackPlugin(['./asset/build/']))
     plugins.push(new webpackManifestPlugin({
@@ -45,19 +52,35 @@ module.exports = {
            test: /\.vue$/,
            loader : 'vue-loader'
           },
-        //   {
-        //     test: /\.css$/,
-        //     use: ExtractTextPlugin.extract({
-        //       fallback: "style-loader",
-        //       use: "css-loader"
-        //     })
-        //   },
+          // {
+          //   test: /\.css$/,
+          //   use: [
+          //     isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+          //     'css-loader',
+          //   ]
+          // },
           {
             test: /\.css$/,
-            use: [
-              isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
-              'css-loader',
-            ]
+            use: ExtractTextPlugin.extract({
+              fallback: "style-loader",
+              use: "css-loader"
+            })
+          },
+          {
+              test: /\.less$/,
+              exclude: /node_modules/,
+              loader: ExtractTextPlugin.extract([
+                  {
+                      loader: 'css-loader',
+                      options: {
+                          importLoaders: 1,
+                          minimize: isProduction
+                      }
+                  },
+                  {
+                      loader: 'less-loader'
+                  }
+                ])
           },
           {
             test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,

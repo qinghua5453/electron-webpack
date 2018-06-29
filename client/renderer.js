@@ -5,9 +5,9 @@ const { ipcRenderer } = require('electron')
 ipcRenderer.send('checkForUpdate')
 ipcRenderer.send('isUpdateNow')
 
-// ipcRenderer.on('message', function(event, message) {
-// console.log('sd', message);
-// });
+ipcRenderer.on('message', function(event, message) {
+console.log('sd', message);
+});
 
 ipcRenderer.on('downloadProgress', function(event, downloadProgress) {
 console.log('sd----', downloadProgress);
@@ -16,10 +16,3 @@ console.log('sd----', downloadProgress);
 ipcRenderer.on('isUpdateNow', function() {
 	ipcRenderer.send('isUpdateNow')
 })
-
-
-// let enterpage = document.getElementById('enterpage')
-
-// enterpage.onclick = function() {
-//    ipcRenderer.send('go-to-webview')
-// }
