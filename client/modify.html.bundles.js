@@ -82,8 +82,8 @@ let updateProdHTMLPages = () => {
 let setDevHTMLPages = () => {
 
     let bundleMap = {
-        js: 'http://127.0.0.1:3000/asset/build/app.bundle.js',
-        css: 'http://127.0.0.1:3000/asset/build/app.bundle.css'
+        js: '/asset/build/app.bundle.js',
+        css: '/asset/build/app.bundle.css'
     }
     let filePath = './index.html'
     fs.readFile(filePath, (err, data) => {

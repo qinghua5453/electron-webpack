@@ -26,8 +26,13 @@
             showAddTabButton: false,
             showUrlBar: false,
         })
-
-        enav.newTab('http://192.168.2.146:9000')
+        let webviewUrl = ''
+        if(process.env.NODE_ENV == 'development') {
+            webviewUrl = 'http://192.168.2.147:9000'
+        }else {
+            webviewUrl = 'test.syzljh.com'
+        }
+        enav.newTab(webviewUrl)
         // // 调用webview 的debug模式
         // enav.openDevTools()
     </script>

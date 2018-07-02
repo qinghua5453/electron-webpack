@@ -18,7 +18,7 @@ let getPlugin = () => {
   plugins.push(new ExtractTextPlugin({
     filename: isProduction ? '[name].[hash:7].bundle.css' : '[name].bundle.css',
     disable: false,
-    allChunks: false
+    allChunks: isProduction ? true : false
   }))
   if(isProduction) {
     plugins.push(new CleanWebpackPlugin(['./asset/build/']))
