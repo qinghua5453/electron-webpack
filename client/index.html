@@ -3,14 +3,22 @@
 
 <head>
     <title>首营资料共享平台</title>
-    <link rel="stylesheet" href="/asset/build/app.bundle.css">
+    <link rel="stylesheet" href="./asset/build/app.ae56b5e.bundle.css">
+    <script src="./renderer.js"></script>
 </head>
 
 <body>
     <div id="syjh">
     </div>
-<script src="/asset/build/app.bundle.js"></script>
+<script>
+    // 重命名 Electron 提供的 require
+    window.nodeRequire = require;
+    delete window.require;
+    delete window.exports;
+    delete window.module;
+</script>
+<script src="./asset/static/js/jquery-3.3.1.min.js"></script>
+<script src="./asset/static/js/layer/layer.js"></script>
+<script src="./asset/build/app.ae56b5e.bundle.js"></script>
 </body>
-<script src="./renderer.js"></script>
-</html>
 </html>

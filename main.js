@@ -1,6 +1,8 @@
 // index.js
 const { app, BrowserWindow, ipcMain } = require('electron')
 const { autoUpdater } = require('electron-updater')
+const url = require('url')
+const path = require('path')
 // const menuTemplate = require('./menu.js')
 let mainWindow = null;
 let childWindow = null;
@@ -58,7 +60,8 @@ let updateHandle = () => {
   let message = {
       error: '检查更新出错',
       checking: '正在检查更新……',
-      updateAva: '检测到新版本，正在下载……',
+      // updateAva: '检测到新版本，正在下载……',
+      updateAva: '检测到新版本,必须更新后才能使用',
       updateNotAva: '现在使用的就是最新版本，不用更新',
     };
 
@@ -75,12 +78,19 @@ let updateHandle = () => {
 
       // 当开始检查更新的时候触发
       autoUpdater.on('checking-for-update', function () {
+        // 此函数无论什么事实都触发，不管是低版本、高版本
         sendUpdateMessage(message.checking)
       });
 
       // 当发现一个可用更新的时候触发，更新包下载会自动开始
       autoUpdater.on('update-available', function (info) {
-        sendUpdateMessage(message.updateAva)
+        // 此时触发弹窗 告知用户必须更新后才能使用
+        mainWindow.webContents.send('autoDownload', message.updateAva)
+        // 用户点击弹窗的确定 方可下载 此时触发autoDownload参数为true
+        ipcMain.on('rightUpdate', function() {
+          autoUpdater.autoDownload = true
+        })
+        // sendUpdateMessage(message.updateAva)
       });
       // 当没有可用更新的时候触发
       autoUpdater.on('update-not-available', function (info) {

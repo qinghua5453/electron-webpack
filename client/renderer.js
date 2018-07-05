@@ -9,7 +9,6 @@ ipcRenderer.send('checkForUpdate')
 // ipcRenderer.on('message', function(event, message) {
 // console.log('sd', message);
 // });
-
 ipcRenderer.on('downloadProgress', function(event, downloadProgress) {
 console.log('sd----', downloadProgress);
 });
