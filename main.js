@@ -41,7 +41,7 @@ let createWindow = () => {
 
     ipcMain.on('go-to-webview', () => {
       childWindow = new BrowserWindow(childOptions)
-      childWindow.loadURL(`file:///${__dirname}/client/index_webview.html`) // 二级webview页面
+      childWindow.loadURL(`file:///${__dirname}/index_webview.html`) // 二级webview页面
       childWindow.webContents.openDevTools()
       childWindow.on('closed', () => {
         childWindow = null

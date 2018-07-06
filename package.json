@@ -1,6 +1,6 @@
 {
   "name": "syzljh",
-  "version": "1.2.0",
+  "version": "1.1.0",
   "description": "",
   "main": "main.js",
   "scripts": {
@@ -24,7 +24,7 @@
       "./menu.js",
       "./client/asset/",
       "./client/index.html",
-      "./client/index_webview.html", 
+      "./index_webview.html",
       "./client/renderer.js"
     ],
     "publish": [
@@ -51,13 +51,12 @@
     }
   },
   "devDependencies": {
-    "cross-env": "^5.2.0",
     "electron-builder": "^20.15.1",
     "electron": "^2.0.3"
   },
   "dependencies": {
-    "electron-updater": "^2.21.10",
     "ajv": "^6.5.1",
-    "electron-navigation": "^1.5.8"
+    "electron-navigation": "^1.5.8",
+    "electron-updater": "^2.21.10"
   }
 }
