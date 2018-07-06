@@ -30,11 +30,12 @@
         if(process.env.NODE_ENV == 'development') {
             webviewUrl = 'http://192.168.2.148:9000'
         }else {
+            console.log('test 环境')
             webviewUrl = 'test.syzljh.com'
         }
         enav.newTab(webviewUrl)
         // // 调用webview 的debug模式
-        // enav.openDevTools()
+        enav.openDevTools()
     </script>
 </body>
 

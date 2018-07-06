@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "export NODE_ENV='development' && electron .",
     "build": "export NODE_ENV='production' && electron .",
-    "dist:win64": "cross-env NODE_ENV=production electron-builder --win --x64"
+    "dist:win64": "export NODE_ENV=production && electron-builder --win --x64"
   },
   "author": "",
   "license": "ISC",
@@ -19,11 +19,12 @@
       "output": "build"
     },
     "files": [
-      "./static/*",
+      "./static/",
       "./main.js",
       "./menu.js",
-      "./client/index_main.html",
-      "./client/index.child.html",
+      "./client/asset/",
+      "./client/index.html",
+      "./client/index_webview.html", 
       "./client/renderer.js"
     ],
     "publish": [

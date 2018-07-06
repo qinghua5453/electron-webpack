@@ -81,21 +81,21 @@ let updateHandle = () => {
         // 此函数无论什么事实都触发，不管是低版本、高版本
         sendUpdateMessage(message.checking)
       });
-
       // 当发现一个可用更新的时候触发，更新包下载会自动开始
       autoUpdater.on('update-available', function (info) {
         // 此时触发弹窗 告知用户必须更新后才能使用
         mainWindow.webContents.send('autoDownload', message.updateAva)
-        // 用户点击弹窗的确定 方可下载 此时触发autoDownload参数为true
-        ipcMain.on('rightUpdate', function() {
-          autoUpdater.autoDownload = true
-        })
-        // sendUpdateMessage(message.updateAva)
+        sendUpdateMessage(message.updateAva)
       });
       // 当没有可用更新的时候触发
       autoUpdater.on('update-not-available', function (info) {
         sendUpdateMessage(message.updateNotAva)
       });
+     
+      // 用户点击弹窗的确定 方可下载 此时触发autoDownload参数为true
+      ipcMain.on('rightUpdate', function() {
+        autoUpdater.downloadUpdate()
+      })
 
       // 更新下载进度事件
       autoUpdater.on('download-progress', function (progressObj) {
@@ -103,11 +103,12 @@ let updateHandle = () => {
       })
       // 在更新下载完成的时候触发
       autoUpdater.on('update-downloaded', function (event, releaseNotes, releaseName, releaseDate, updateUrl, quitAndUpdate) {
-        ipcMain.on('isUpdateNow', function (e, arg){
-          // 在下载完成后，重启当前的应用并且安装更新。这个方法应该仅在 update-downloaded 事件触发后被调用
-          autoUpdater.quitAndInstall();
-        });
-        mainWindow.webContents.send('isUpdateNow')
+        autoUpdater.quitAndInstall();
+        // ipcMain.on('isUpdateNow', function (e, arg){
+        //   // 在下载完成后，重启当前的应用并且安装更新。这个方法应该仅在 update-downloaded 事件触发后被调用
+        //   autoUpdater.quitAndInstall();
+        // });
+        // mainWindow.webContents.send('isUpdateNow')
       });
   })
 }

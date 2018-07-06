@@ -1,6 +1,8 @@
 <template>
 	<div id="syjh">
 	   <button class="color" @click="gotoWebview">去webview页面</button>
+	   <div>message: {{message}}</div>
+	   <div>percent: {{percent}}</div>
 		<!-- <Modal
 			v-model="modal1"
 			title="检查更新"
@@ -25,7 +27,8 @@
 	 data () {
           return {
 			   modal1: true,
-			   message: ''
+			   message: '',
+			   percent: '0%'
 		  }
 	 },
 	 methods: {
@@ -42,20 +45,29 @@
 	 mounted() {
 		 console.log('----------test--------')
 		 let self = this
-		//  ipcRenderer.on('message', function(event, message) {
-		// 	self.message = message
-		// 	console.log('vue', message);
-		//  });
-		 layer.confirm('检测到新版本,必须更新后才能使用', {
-			btn: ['立即更新'] //按钮
-			}, function(index){
-			  ipcRenderer.send('rightUpdate')
-			  layer.close(index)
-			});
-		 ipcRenderer.on('autoDownload', function(event, message) {
+		 ipcRenderer.on('message', function(event, message) {
+			self.message = message
+			console.log('vue', message);
+		 });
+		ipcRenderer.on('autoDownload', function(event, message) {
 			//  显示更新的弹窗
 			self.message = message
+			layer.confirm(self.message, {
+				btn: ['立即更新'] //按钮
+				}, function(index){
+					ipcRenderer.send('rightUpdate')
+					ipcRenderer.on('downloadProgress', function(event, downloadProgress) {
+						console.log('sd----', downloadProgress);
+						self.percent = downloadProgress
+					});
+					layer.alert('正在下载更新' + self.percent);
+				}
+		    );
 		 })
+		// ipcRenderer.on('downloadProgress', function(event, downloadProgress) {
+		//    self.percent = downloadProgress
+        //    layer.alert('正在下载更新' + self.percent)
+		// })
 		 // 直接 引入出现跨域问题。
 		 // 需要结合webpack-dev-server 或者nginx 配置跨域问题
 		//  let params = {
