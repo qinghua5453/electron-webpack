@@ -16,7 +16,7 @@ autoUpdater.autoDownload = false; //关闭自动更新 通过用户点击事件 
 let createWindow = () => {
     let mainOptions = {
       width: 1200,
-      height: 800,
+      height: 800
     }
     mainWindow = new BrowserWindow(mainOptions);
     console.log('process.env.NODE_ENV', process.env.NODE_ENV)
