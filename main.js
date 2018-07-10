@@ -16,7 +16,8 @@ autoUpdater.autoDownload = false; //关闭自动更新 通过用户点击事件 
 let createWindow = () => {
     let mainOptions = {
       width: 1200,
-      height: 800
+      height: 800,
+      frame: false // 隐藏窗口导航
     }
     mainWindow = new BrowserWindow(mainOptions);
     console.log('process.env.NODE_ENV', process.env.NODE_ENV)
@@ -27,9 +28,16 @@ let createWindow = () => {
     }
     mainWindow.webContents.openDevTools()
 
-    mainWindow.on('closed', () => {
-        mainWindow = null;
-    });
+    ipcMain.on('close-main-window', function() {
+      mainWindow.close()
+      mainWindow = null
+    })
+    ipcMain.on('min-main-window', function() {
+      mainWindow.minimize()
+    })
+    ipcMain.on('max-main-window', function() {
+      mainWindow.maximize()
+    })
 
     let childOptions = {
       width: 1200,
@@ -37,15 +45,28 @@ let createWindow = () => {
       center: false, // 窗口屏幕居中
       x: 400,  // 窗口相对于屏幕的左偏移位置
       y: 400,  // 窗口相对于屏幕的顶部偏移位置
+      frame: false
     }
 
     ipcMain.on('go-to-webview', () => {
+      if(childWindow != null) {
+        childWindow.setAlwaysOnTop(true)
+        return  // 避免重复打开多个webview页
+      }
       childWindow = new BrowserWindow(childOptions)
-      childWindow.loadURL(`file:///${__dirname}/index_webview.html`) // 二级webview页面
+      childWindow.loadURL(`file:///${__dirname}/client/index_webview.html`) // 二级webview页面
       childWindow.webContents.openDevTools()
-      childWindow.on('closed', () => {
-        childWindow = null
-      })
+    })
+
+    ipcMain.on('close-webview-window', function() {
+      childWindow.close()
+      childWindow = null
+    })
+    ipcMain.on('min-webview-window', function() {
+      childWindow.minimize()
+    })
+    ipcMain.on('max-webview-window', function() {
+      childWindow.maximize()
     })
 
     updateHandle()

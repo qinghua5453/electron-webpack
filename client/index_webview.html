@@ -9,14 +9,41 @@
           display: flex;
           flex-direction: column;
       }
-      #nav-body-views{
-        flex: 1;
+      .nav-body-views{
+          flex: 1;
+          overflow-y: hidden;
       }
-      
+      .nav-body-views webview {
+           height: 100%;
+      }
+      .nav-top-wrap{
+        padding: 5px;
+        background: #4789f2;
+        display: flex;
+        height: 60px;
+        justify-content: center;
+        align-items: center;
+      }
+      .nav-top-wrap .log-w {
+         flex:2;
+       }
+      .nav-top-wrap .log-w img {
+         width: 100%;
+       }
+      .nav-top-wrap .reload-forward-back-w {
+         flex: 4;
+         justify-content: center;
+         display: flex
+      }
+      .nav-top-wrap .min-max-close-w {
+         flex: 4;
+         justify-content: center;
+         display: flex
+       }
     </style>
 </head>
 
-<body>
+<!-- <body>
     <div id="nav-body-ctrls"></div>
     <div id="nav-body-tabs"></div>
     <div id="nav-body-views"></div>
@@ -37,10 +64,62 @@
         // // 调用webview 的debug模式
         enav.openDevTools()
     </script>
-</body>
-<!-- <body>
-    <div id="nav-body-views">
-        <webview src="https://www.github.com/"></webview>
+</body> -->
+<body>
+    <div class="nav-top-wrap">
+        <div class="log-w">
+           <img src="./asset/static/images/log.png">
+        </div>
+        <div class="reload-forward-back-w">
+            <button id="webview-forward">前进</button>
+            <button id="webview-back">后退</button>
+            <button id="webview-reload">刷新</button>
+        </div>
+        <div class="min-max-close-w">
+            <button id="webview-min">缩小</button>
+            <button id="webview-max">全屏</button>
+            <button id="webview-close">关闭</button>
+        </div>
     </div>
- </body> -->
+    <div class="nav-body-views">
+        <webview id="webview" src="https://test.syzljh.com/"></webview>
+    </div>
+    <script>
+       const { ipcRenderer } = require('electron')
+       function getId(id) {
+           return document.getElementById(id)
+       }
+       var webview
+       var webview_min, webview_max, webview_close, webview_forward, webview_back, webview_reload
+       webview = getId('webview')
+
+       webview_min = getId('webview-min')
+       webview_max = getId('webview-max')
+       webview_close = getId('webview-close')
+
+       webview_forward = getId('webview-forward')
+       webview_back = getId('webview-back')
+       webview_reload = getId('webview-reload')
+
+       webview_min.addEventListener('click', function(e) {
+          ipcRenderer.send('min-webview-window')
+       })
+       webview_max.addEventListener('click', function(e) {
+          ipcRenderer.send('max-webview-window')
+       })
+       webview_close.addEventListener('click', function(e) {
+          ipcRenderer.send('close-webview-window')
+       })
+
+       webview_forward.addEventListener('click', function() {
+          webview.goForward()
+       })
+       webview_back.addEventListener('click', function() {
+          webview.goBack()
+       })
+       webview_reload.addEventListener('click', function() {
+          webview.reload()
+       })
+    </script>
+ </body>
 </html>

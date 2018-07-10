@@ -6,6 +6,7 @@
 <template>
 	<div id="syjh">
 		<div v-show="modal1"></div>
+		<top-nav></top-nav>
 	    <button class="color" @click="gotoWebview">去webview页面</button>
 	</div>
 </template>
