@@ -6,14 +6,16 @@
 <template>
 	<div id="syjh">
 		<div v-show="modal1"></div>
-		<top-nav></top-nav>
+		<!-- <top-nav></top-nav> -->
+		<div id="menu"></div>
 	    <button class="color" @click="gotoWebview">去webview页面</button>
 	</div>
 </template>
 
 <script>
-//  const  { ipcRenderer } = window.nodeRequire('electron')
  const  { ipcRenderer } = require('electron')
+//  import { Menu } from './config/menu.js'
+const Menu = require('./config/menu.js')
 //  import { axiosRequest } from './config/axios-1.0.js'
 
  export default {
@@ -92,6 +94,11 @@
 		//  axiosRequest(params).then((resp) => {
         //    console.log('resp', resp)
 		//  })
+		let options = {
+			target: 'menu',
+			main: true
+		}
+		let menu = new Menu(options)
 	 }
  }
 </script>

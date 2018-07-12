@@ -1,22 +1,41 @@
 <style scoped>
  .nav-top-wrap{
 	 padding: 5px;
-   background: #4789f2;
+   background: #020047;
    display: flex;
-   height: 60px;
+   height: 50px;
    justify-content: center;
    align-items: center;
  }
  .nav-top-wrap .log-w {
    flex:2;
+   padding-left: 3%;
  }
  .nav-top-wrap .log-w img {
-   width: 100%;
+   width: 310px;
+   height: 30px;
  }
  .nav-top-wrap .min-max-close-w {
   flex: 4;
-  justify-content: center;
-  display: flex
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 2%;
+ }
+ .nav-top-wrap .min-max-close-w img {
+   margin-right: 20px;
+ }
+ .nav-top-wrap .min-max-close-w .min {
+   width: 15px;
+   height: 2px;
+ }
+ .nav-top-wrap .min-max-close-w .max {
+   width: 16px;
+   height: 14px;
+ }
+ .nav-top-wrap .min-max-close-w .close {
+   width: 14px;
+   height: 15px;
  }
 </style>
 
@@ -26,15 +45,31 @@
          <img src="../../resource/log.png">
        </div>
        <div class="min-max-close-w">
-          <button @click="min">缩小</button>
-          <button @click="max">全屏</button>
-          <button @click="close">关闭</button>
+          <img class="min" id="min"  src="../../resource/min.png">
+          <img class="max" id="max"  src="../../resource/max.png">
+          <img class="close" id="close" src="../../resource/close.png">
        </div>
     </div>
 </template>
 
 <script>
   const  { ipcRenderer } = require('electron')
+  function getId (id) {
+    return document.getElementById(id)
+  }
+  let min, max, close
+  min = getId('min')
+  max = getId('max')
+  close = getId('close')
+  min.addEventListener('click', () => {
+    ipcRenderer.send('min-main-window')
+  })
+  max.addEventListener('click', () => {
+    ipcRenderer.send('max-main-window')
+  })
+  close.addEventListener('click', () => {
+    ipcRenderer.send('close-main-window')
+  })
   export default {
       name: 'navTop',
       props:'',
@@ -44,15 +79,7 @@
         }
       },
       methods: {
-        min() {
-            ipcRenderer.send('min-main-window')
-        },
-        max() {
-            ipcRenderer.send('max-main-window')
-        },
-        close() {
-            ipcRenderer.send('close-main-window')
-        }
+        
       }
 
   }

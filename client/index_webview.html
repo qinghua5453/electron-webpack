@@ -16,7 +16,7 @@
       .nav-body-views webview {
            height: 100%;
       }
-      .nav-top-wrap{
+      /* .nav-top-wrap{
         padding: 5px;
         background: #4789f2;
         display: flex;
@@ -39,7 +39,7 @@
          flex: 4;
          justify-content: center;
          display: flex
-       }
+       } */
     </style>
 </head>
 
@@ -66,7 +66,7 @@
     </script>
 </body> -->
 <body>
-    <div class="nav-top-wrap">
+    <!-- <div class="nav-top-wrap">
         <div class="log-w">
            <img src="./asset/static/images/log.png">
         </div>
@@ -80,46 +80,62 @@
             <button id="webview-max">全屏</button>
             <button id="webview-close">关闭</button>
         </div>
-    </div>
+        <div>
+            <button id="webview-user">个人信息</button>
+        </div>
+    </div> -->
+    <div id="menu"></div>
     <div class="nav-body-views">
         <webview id="webview" src="https://test.syzljh.com/"></webview>
     </div>
     <script>
-       const { ipcRenderer } = require('electron')
-       function getId(id) {
-           return document.getElementById(id)
-       }
-       var webview
-       var webview_min, webview_max, webview_close, webview_forward, webview_back, webview_reload
-       webview = getId('webview')
+        const Menu = require('./src/config/menu.js')
+        let options = {
+			target: 'menu',
+			webview: true
+		}
+		let menu = new Menu(options)
+    //    const { ipcRenderer } = require('electron')
+    //    function getId(id) {
+    //        return document.getElementById(id)
+    //    }
+    //    var webview
+    //    var webview_min, webview_max, webview_close, webview_forward, webview_back, webview_reload
+    //    var webview_user
+    //    webview = getId('webview')
 
-       webview_min = getId('webview-min')
-       webview_max = getId('webview-max')
-       webview_close = getId('webview-close')
+    //    webview_min = getId('webview-min')
+    //    webview_max = getId('webview-max')
+    //    webview_close = getId('webview-close')
 
-       webview_forward = getId('webview-forward')
-       webview_back = getId('webview-back')
-       webview_reload = getId('webview-reload')
+    //    webview_forward = getId('webview-forward')
+    //    webview_back = getId('webview-back')
+    //    webview_reload = getId('webview-reload')
+       
+    //    webview_user = getId('webview-user')
+    //    webview_min.addEventListener('click', function(e) {
+    //       ipcRenderer.send('min-webview-window')
+    //    })
+    //    webview_max.addEventListener('click', function(e) {
+    //       ipcRenderer.send('max-webview-window')
+    //    })
+    //    webview_close.addEventListener('click', function(e) {
+    //       ipcRenderer.send('close-webview-window')
+    //    })
 
-       webview_min.addEventListener('click', function(e) {
-          ipcRenderer.send('min-webview-window')
-       })
-       webview_max.addEventListener('click', function(e) {
-          ipcRenderer.send('max-webview-window')
-       })
-       webview_close.addEventListener('click', function(e) {
-          ipcRenderer.send('close-webview-window')
-       })
-
-       webview_forward.addEventListener('click', function() {
-          webview.goForward()
-       })
-       webview_back.addEventListener('click', function() {
-          webview.goBack()
-       })
-       webview_reload.addEventListener('click', function() {
-          webview.reload()
-       })
+    //    webview_forward.addEventListener('click', function() {
+    //       webview.goForward()
+    //    })
+    //    webview_back.addEventListener('click', function() {
+    //       webview.goBack()
+    //    })
+    //    webview_reload.addEventListener('click', function() {
+    //       webview.reload()
+    //    })
+       
+    //    webview_user.addEventListener('click', function() {
+    //       webview.src = 'https://test.syzljh.com/enterprise/people/'
+    //    })
     </script>
  </body>
 </html>
