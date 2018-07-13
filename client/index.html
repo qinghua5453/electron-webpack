@@ -5,10 +5,27 @@
     <link rel="stylesheet" href="./asset/static/js/layui/css/layui.css">
     <link rel="stylesheet" href="/asset/build/app.bundle.css">
     <script src="./renderer.js"></script>
+    <style>
+        html, body {        
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .nav-body-views{
+            flex: 1;
+            overflow-y: hidden;
+        }
+        .nav-body-views webview {
+            height: 100%;
+        }
+    </style>
 </head>
 
 <body>
     <div id="syjh"></div>
+    <div class="nav-body-views">
+        <webview id="webview" src=""></webview>
+    </div>
     <script src="./asset/static/js/layui/layui.js"></script>
     <script src="/asset/build/app.bundle.js"></script>
 </body>

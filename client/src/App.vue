@@ -14,8 +14,8 @@
 
 <script>
  const  { ipcRenderer } = require('electron')
-//  import { Menu } from './config/menu.js'
-const Menu = require('./config/menu.js')
+ require('./config/menu.css')
+ const Menu = require('./config/menu.js')
 //  import { axiosRequest } from './config/axios-1.0.js'
 
  export default {
