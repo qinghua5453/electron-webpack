@@ -24,8 +24,8 @@
       "./menu.js",
       "./client/asset/",
       "./client/index.html",
-      "./index_webview.html",
-      "./client/renderer.js"
+      "./client/index_webview.html",
+      "./client/src/"
     ],
     "publish": [
       {
@@ -51,8 +51,9 @@
     }
   },
   "devDependencies": {
+    "electron": "^2.0.3",
     "electron-builder": "^20.15.1",
-    "electron": "^2.0.3"
+    "electron-drag": "^1.2.0"
   },
   "dependencies": {
     "ajv": "^6.5.1",

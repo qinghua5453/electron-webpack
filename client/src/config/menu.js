@@ -38,8 +38,8 @@ class Menu {
     let html = `<div class="nav-top-wrap">
                     <div class="log-w"><span></span></div>
                     <div class="forward-back-reload-w" id="forward-back-reload-w">
-                        <span class="forward" id="forward"></span>
                         <span class="back" id="back"></span>
+                        <span class="forward" id="forward"></span>
                         <span class="reload" id="reload"></span>
                     </div>
                     <ul class="user-wrap" id="user-wrap">

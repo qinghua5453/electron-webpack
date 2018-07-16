@@ -19,100 +19,62 @@
     }
     </style>
 </head>
-
-<!-- <body>
-    <div id="nav-body-ctrls"></div>
-    <div id="nav-body-tabs"></div>
-    <div id="nav-body-views"></div>
-    <script>
-        /* production */
-        const enav = new (require('electron-navigation'))({
-            showAddTabButton: false,
-            showUrlBar: false,
-        })
-        let webviewUrl = ''
-        if(process.env.NODE_ENV == 'development') {
-            webviewUrl = 'http://192.168.2.148:9000'
-        }else {
-            console.log('test 环境')
-            webviewUrl = 'test.syzljh.com'
-        }
-        enav.newTab(webviewUrl)
-        // // 调用webview 的debug模式
-        enav.openDevTools()
-    </script>
-</body> -->
 <body>
-    <!-- <div class="nav-top-wrap">
-        <div class="log-w">
-           <img src="./asset/static/images/log.png">
-        </div>
-        <div class="reload-forward-back-w">
-            <button id="webview-forward">前进</button>
-            <button id="webview-back">后退</button>
-            <button id="webview-reload">刷新</button>
-        </div>
-        <div class="min-max-close-w">
-            <button id="webview-min">缩小</button>
-            <button id="webview-max">全屏</button>
-            <button id="webview-close">关闭</button>
-        </div>
-        <div>
-            <button id="webview-user">个人信息</button>
-        </div>
-    </div> -->
     <div id="menu"></div>
     <div class="nav-body-views">
         <webview id="webview" src="https://test.syzljh.com/"></webview>
     </div>
+    <script src="./src/config/menu.js"></script>
     <script>
-        const Menu = require('./src/config/menu.js')
         let options = {
-			target: 'menu',
-			webview: true
-		}
-		let menu = new Menu(options)
-    //    const { ipcRenderer } = require('electron')
-    //    function getId(id) {
-    //        return document.getElementById(id)
-    //    }
-    //    var webview
-    //    var webview_min, webview_max, webview_close, webview_forward, webview_back, webview_reload
-    //    var webview_user
-    //    webview = getId('webview')
+            target: 'menu',
+            webview: true
+        }
+        let menu = new Menu(options)
+        makeDraggable('#menu')
+        function makeDraggable(dom) {
+            let el = document.querySelector(dom)
+            let clear
+            try {
+                const drag = require('electron-drag');
+                if (drag.supported) {
+                    clear = drag(el);
+                    clear()
+                    console.log('------')
+                } else {
+                    console.log('<<<<<')
+                    makeDraggableFallback(el);
+                }
+            } catch (ex) {
+                console.log('dddddd')
+                makeDraggableFallback(el);
+            }
+        }
 
-    //    webview_min = getId('webview-min')
-    //    webview_max = getId('webview-max')
-    //    webview_close = getId('webview-close')
-
-    //    webview_forward = getId('webview-forward')
-    //    webview_back = getId('webview-back')
-    //    webview_reload = getId('webview-reload')
-       
-    //    webview_user = getId('webview-user')
-    //    webview_min.addEventListener('click', function(e) {
-    //       ipcRenderer.send('min-webview-window')
-    //    })
-    //    webview_max.addEventListener('click', function(e) {
-    //       ipcRenderer.send('max-webview-window')
-    //    })
-    //    webview_close.addEventListener('click', function(e) {
-    //       ipcRenderer.send('close-webview-window')
-    //    })
-
-    //    webview_forward.addEventListener('click', function() {
-    //       webview.goForward()
-    //    })
-    //    webview_back.addEventListener('click', function() {
-    //       webview.goBack()
-    //    })
-    //    webview_reload.addEventListener('click', function() {
-    //       webview.reload()
-    //    })
-       
-    //    webview_user.addEventListener('click', function() {
-    //       webview.src = 'https://test.syzljh.com/enterprise/people/'
-    //    })
+        function makeDraggableFallback(el) {
+            let dragging = false;
+            let mouseX = 0;
+            let mouseY = 0;
+            el.addEventListener('mousedown', (e) => {
+                dragging = true;
+                const { pageX, pageY } = e;
+                mouseX = pageX;
+                mouseY = pageY;
+            });
+            window.addEventListener('mouseup', () => {
+                dragging = false;
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (dragging) {
+                    const { pageX, pageY } = e;
+                    const win = require('electron').remote.getCurrentWindow();
+                    const pos = win.getPosition();
+                    pos[0] = pos[0] + pageX - mouseX;
+                    pos[1] = pos[1] + pageY - mouseY;
+                    win.setPosition(pos[0], pos[1], true);
+                }
+            });
+        }
     </script>
  </body>
 </html>
