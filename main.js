@@ -15,9 +15,10 @@ autoUpdater.autoDownload = false; //关闭自动更新 通过用户点击事件 
 
 let createWindow = () => {
     let mainOptions = {
-      width: 1200,
-      height: 800,
-      frame: false // 隐藏窗口导航
+      width: 563,
+      height: 549,
+      frame: false, // 隐藏窗口导航
+      resizable: true
     }
     mainWindow = new BrowserWindow(mainOptions);
     console.log('process.env.NODE_ENV', process.env.NODE_ENV)

@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import './test.css'
 // import 'iview/dist/styles/iview.css'
 // import { Message, Modal } from 'iview';
 // import topNav from './components/common/top-nav.vue'
