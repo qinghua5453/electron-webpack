@@ -84,7 +84,7 @@ module.exports = {
           },
           {
             test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/,
-            loader: 'url-loader?limit=10000'
+            loader: 'url-loader'
           }
         ]
     },
