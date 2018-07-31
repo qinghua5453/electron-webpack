@@ -31,7 +31,7 @@ let getPlugin = () => {
 }
 
 module.exports = {
-    mode: 'none',
+    mode: isProduction ? 'production' : 'development',
     target: 'electron-renderer',
     entry:{
         app:'./src/main.js',

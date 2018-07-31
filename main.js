@@ -1,5 +1,5 @@
 // index.js
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, session } = require('electron')
 const { autoUpdater } = require('electron-updater')
 const url = require('url')
 const path = require('path')
@@ -18,7 +18,8 @@ let createWindow = () => {
       width: 563,
       height: 549,
       frame: false, // 隐藏窗口导航
-      resizable: true
+      resizable: true,
+      webPreferences: {webSecurity: false}
     }
     mainWindow = new BrowserWindow(mainOptions);
     console.log('process.env.NODE_ENV', process.env.NODE_ENV)
@@ -27,6 +28,7 @@ let createWindow = () => {
     }else {
       mainWindow.loadURL(`file:///${__dirname}/client/index.html`); //本地开发主页面
     }
+    getCooike()
     mainWindow.webContents.openDevTools()
 
     ipcMain.on('close-main-window', function() {
@@ -77,7 +79,18 @@ let createWindow = () => {
 //   const menu = Menu.buildFromTemplate(menuTemplate);
 //   Menu.setApplicationMenu(menu);
 // }
-
+let getCooike = () => {
+  let url = (process.env.NODE_ENV == 'development') ? 'http://127.0.0.1' : `/`
+  session.defaultSession.cookies.get({url: url}, (error, cookies) => {
+    if(error) return
+    for(let i = 0; i < cookies.length; i++) {
+      if(cookies[i].name === 'csrftoken') {
+        global.csrftoken = cookies[i].value
+        break
+      }
+    }
+ })
+}
 let updateHandle = () => {
   let message = {
       error: '检查更新出错',

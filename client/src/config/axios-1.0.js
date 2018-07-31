@@ -1,14 +1,15 @@
 import axios from 'axios';
-import { Message } from 'iview';
+const  { remote } = require('electron')
+// import { Message } from 'iview';
 // import Qs from 'qs';
 
 // 创建新实例
-
 var instance = axios.create({
 	method:'get', //default
 	baseURL:'',   // base url
 	headers:{
-		'Content-Type': 'application/json'
+		'Content-Type': 'application/json',
+		'X-CSRFTOKEN': remote.getGlobal('csrftoken') ? remote.getGlobal('csrftoken') : ''
 	},
 	timeout: 5000,
 	data:{},  // request body
@@ -45,16 +46,16 @@ instance.interceptors.response.use(function (response) {
 			if(error && error.response){
 					switch (error.response.status) {
 						case 404 :
-						Message.error('请求地址:' + error.config.url + '出错！')
+						layer.alert('请求地址:' + error.config.url + '出错！')
 										break
 						case 408 :
-						Message.error('请求超时！')
+						layer.alert('请求超时！')
 										break
 						case 500 :
-						Message.error('服务器出错！')
+						layer.alert('服务器出错！')
 										break
 						default  :
-						Message.error(error.response.data.detail)
+						layer.alert(error.response.data.detail)
 					}
 			}
 			return Promise.reject(error);

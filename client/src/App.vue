@@ -124,14 +124,14 @@
 				<div class="login-w">
 					<div class="login-user-w login-common">
                         <span class="img-user"></span>
-						<input class="com-input" type="text" placeholder="请输入用户名（邮箱）">
+						<input class="com-input" type="text" placeholder="请输入用户名（邮箱）" name="account" v-model="account">
 					</div>
 					<div class="login-password-w login-common">
 						<span class="img-password"></span>
-						<input class="com-input" type="text" placeholder="请输入6-12位密码">
+						<input class="com-input" type="password" placeholder="请输入6-12位密码" name="password" v-model="password">
 					</div>
 					<div class="clear"><span class="forget-password"  @click="goToforgetPassword">忘记密码?</span></div>
-					<div><button class="login-btn">登  录</button></div>
+					<div><button class="login-btn" @click="postSubmit">登  录</button></div>
 				</div>
 			</div>
 		</div>
@@ -143,7 +143,8 @@
 //  require('./config/menu.css')
 //  const Menu = require('./config/menu.js')
  const Update = require('./config/update.js')
-//  import { axiosRequest } from './config/axios-1.0.js'
+ const host = (process.env.NODE_ENV == 'development') ? 'http://127.0.0.1': 'https://test.syzljh.com'
+ import { axiosRequest } from './config/axios-1.0.js'
 
  export default {
 	 name: 'main-vue',
@@ -152,7 +153,8 @@
 	 },
 	 data () {
           return {
-
+			 account: '',
+			 password: ''
 		  }
 	 },
 	 methods: {
@@ -164,6 +166,48 @@
 		 },
 		 goToforgetPassword() {
 			 shell.openExternal('https://zhejiang.syzljh.cn/account/password/index.html');
+		 },
+		 beforeSubmit() {
+			 let account = this.account.trim()
+			 let password = this.password.trim()
+			 let account_reg = /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@([a-zA-Z0-9]+[-.])+[a-zA-Z0-9]{2,4}$/
+			//  if(!account) {
+			// 	 layer.alert('请输入用户名（邮箱）')
+			// 	 return false
+			//  }
+			//  if(!account_reg.test(account)) {
+			// 	 layer.alert('请输入正确格式的邮箱')
+			// 	 return false
+			//  }
+			//  if(!password) {
+			// 	 layer.alert('请输入密码')
+			// 	 return false
+			//  }
+			 return true
+		 },
+		 postSubmit() {
+			 let self = this
+			 if(this.beforeSubmit()) {
+				let params = {
+					url: host + '/user/api/group/login/',
+					method: 'POST',
+					// data: {
+					// 	account: this.account.trim(),
+					// 	password: this.password.trim()
+					// }
+					data: {
+						account: '67444758@tianzhu.com',
+						password: '67444758'
+					}
+				}
+				axiosRequest(params).then((res) => {
+					if(res.detail == 'login') {
+                       self.gotoWebview()
+					}
+				}).catch((err) => {
+					
+				})
+			 }
 		 }
 	 },
 	 updated() {
@@ -184,6 +228,7 @@
 		// }
 		// let menu = new Menu(options)
 		let update = new Update()
+		console.log('--process.env.NODE_ENV--', process.env.NODE_ENV)
 	 }
  }
 </script>

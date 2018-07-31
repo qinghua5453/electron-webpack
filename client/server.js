@@ -10,12 +10,13 @@ const server = new WebpackDevServer(compiler,{
     disableHostCheck: true,
     inline: true,
     publicPath: "/asset/build/", // 对应webpack output publicPath
-    proxy: {
-        '/agreement/api/' : {
-            target: 'http://192.168.2.147:9000',
-            secure: false
-        }
-    }
+    // proxy: {
+    //     '/login/' : {
+    //         target: 'http://localhost:9000',
+    //         changeOrigin: true,
+    //         secure: false
+    //     }
+    // }
 })
 
 server.listen(3000,function(err){
