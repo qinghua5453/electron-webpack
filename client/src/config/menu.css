@@ -71,8 +71,8 @@
   background-image: url('../resource/reload.png');
 }
 .nav-top-wrap .user-wrap {
-  display: none;
-  flex: 10;
+  display: flex;
+  flex: 5;
   justify-content: flex-end;
   align-items: center;
   padding-right: 2%;

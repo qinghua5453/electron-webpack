@@ -1,15 +1,17 @@
 // index.js
 const { app, BrowserWindow, ipcMain, session } = require('electron')
 const { autoUpdater } = require('electron-updater')
-const url = require('url')
-const path = require('path')
-// const menuTemplate = require('./menu.js')
+const { host } = require('./client/src/config/host.js')
 let mainWindow = null;
 let childWindow = null;
 app.on('ready', () => {
   createWindow()
-  // createMenu()
 });
+
+app.on('window-all-closed', () => {
+  global.loginState = null
+  console.log('-------closed-------', global.loginState)
+})
 
 autoUpdater.autoDownload = false; //关闭自动更新 通过用户点击事件 发起是否更新
 
@@ -19,16 +21,17 @@ let createWindow = () => {
       height: 549,
       frame: false, // 隐藏窗口导航
       resizable: true,
+      show: false,
       webPreferences: {webSecurity: false}
     }
     mainWindow = new BrowserWindow(mainOptions);
-    console.log('process.env.NODE_ENV', process.env.NODE_ENV)
     if(process.env.NODE_ENV == 'development') {
       mainWindow.loadURL('http://localhost:3000')
     }else {
       mainWindow.loadURL(`file:///${__dirname}/client/index.html`); //本地开发主页面
     }
     getCooike()
+
     mainWindow.webContents.openDevTools()
 
     ipcMain.on('close-main-window', function() {
@@ -40,6 +43,12 @@ let createWindow = () => {
     })
     ipcMain.on('max-main-window', function() {
       mainWindow.maximize()
+    })
+    ipcMain.on('show-main-window', function() {
+      mainWindow.show()
+    })
+    ipcMain.on('hide-main-window', function() {
+      mainWindow.hide()
     })
 
     let childOptions = {
@@ -62,26 +71,42 @@ let createWindow = () => {
     })
 
     ipcMain.on('close-webview-window', function() {
-      childWindow.close()
-      childWindow = null
+      // childWindow.close()
+      // childWindow = null
+        childWindow.hide()
     })
+
     ipcMain.on('min-webview-window', function() {
       childWindow.minimize()
     })
+
     ipcMain.on('max-webview-window', function() {
       childWindow.maximize()
     })
 
     updateHandle()
+    judgeLoginState()
 }
 
-// function createMenu() {
-//   const menu = Menu.buildFromTemplate(menuTemplate);
-//   Menu.setApplicationMenu(menu);
-// }
+ipcMain.on('save-login-state', (event, state) => {
+    global.loginState = state
+    console.log('global.loginState', global.loginState)
+    if(global.loginState == 'login' && !mainWindow.isVisible()) {
+      mainWindow.show()
+    }
+})
+
+function judgeLoginState () {
+  if(!global.loginState || global.loginState == 'login') {
+    mainWindow.show()
+  }
+  if(global.loginState && global.loginState != 'login') {
+    childWindow.show()
+  }
+}
+
 let getCooike = () => {
-  let url = (process.env.NODE_ENV == 'development') ? 'http://127.0.0.1' : `/`
-  session.defaultSession.cookies.get({url: url}, (error, cookies) => {
+  session.defaultSession.cookies.get({url: host()}, (error, cookies) => {
     if(error) return
     for(let i = 0; i < cookies.length; i++) {
       if(cookies[i].name === 'csrftoken') {

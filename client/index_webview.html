@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>首营资料共享平台</title>
     <link rel="stylesheet" href="./src/config/menu.css">
@@ -24,8 +23,9 @@
     <div class="nav-body-views">
         <webview id="webview" src="http://127.0.0.1:9000/account/home/"></webview>
     </div>
-    <script src="./src/config/menu.js"></script>
+    <script src="./asset/static/js/layui/layui.js"></script>
     <script>
+        let Menu = require('./src/config/menu.js')
         let options = {
             target: 'menu',
             webview: true

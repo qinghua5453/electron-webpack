@@ -21,7 +21,6 @@
     "files": [
       "./static/",
       "./main.js",
-      "./menu.js",
       "./client/asset/",
       "./client/index.html",
       "./client/index_webview.html",

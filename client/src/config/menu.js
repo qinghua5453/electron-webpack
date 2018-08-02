@@ -1,5 +1,8 @@
 "use strict"
 const  { ipcRenderer } = require('electron')
+const  { axiosRequest } = require('./axios-1.0.js')
+const  { host } = require('./host.js')
+
 class Menu {
     constructor (options){
         if(typeof (options.main) == undefined || typeof(options.webview) == undefined) {
@@ -22,15 +25,16 @@ class Menu {
         this.min_window()
         this.max_window()
         this.close_window()
-        if(this.main) {
+        // if(this.main) {
+        //     this.getId('user-wrap').style.display = 'flex'
+        // }
+        if(this.webview) {
             this.gotoUserMsg()
             this.hoverUser()
-            this.getId('user-wrap').style.display = 'flex'
-        }
-        if(this.webview) {
             this.forwardHandle()
             this.backHandle()
             this.reloadHandle()
+            this.loginOut()
             this.getId('forward-back-reload-w').style.display = 'flex'
         }
     }
@@ -48,7 +52,7 @@ class Menu {
                              杭州天猪科技有限公司
                              <ul class="sub-ul" id="sub-ul">
                                <li id="my-admin">我的资料</li>
-                               <li>退出登录</li>
+                               <li id="login-out">退出登录</li>
                              </ul>
                          </li>
                          <li class="triangle"></li>
@@ -113,7 +117,18 @@ class Menu {
     }
     gotoUserMsg () {
         this.getId('my-admin').addEventListener('click', () => {
-            this.webviewId.src = 'https://test.syzljh.com/enterprise/people/'
+            this.webviewId.src = host() + '/enterprise/people/'
+        })
+    }
+    loginOut () {
+        this.getId('login-out').addEventListener('click', () => {
+           let params = {url: host() + '/user/api/group/logout/'}
+           axiosRequest(params).then((res) => {
+            ipcRenderer.send('close-webview-window')
+             console.log(res)
+           }).catch((err) => {
+             console.log(err)
+           })
         })
     }
 }

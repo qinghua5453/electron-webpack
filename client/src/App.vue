@@ -139,12 +139,10 @@
 </template>
 
 <script>
- const  { ipcRenderer, shell } = require('electron')
-//  require('./config/menu.css')
-//  const Menu = require('./config/menu.js')
- const Update = require('./config/update.js')
- const host = (process.env.NODE_ENV == 'development') ? 'http://127.0.0.1': 'https://test.syzljh.com'
- import { axiosRequest } from './config/axios-1.0.js'
+const  { ipcRenderer, shell, remote } = require('electron')
+const Update = require('./config/update.js')
+const { host } = require('./config/host.js')
+const { axiosRequest } = require('./config/axios-1.0.js')
 
  export default {
 	 name: 'main-vue',
@@ -166,6 +164,9 @@
 		 },
 		 goToforgetPassword() {
 			 shell.openExternal('https://zhejiang.syzljh.cn/account/password/index.html');
+		 },
+		 saveLoginState(state) {
+            ipcRenderer.send('save-login-state', state)
 		 },
 		 beforeSubmit() {
 			 let account = this.account.trim()
@@ -189,25 +190,36 @@
 			 let self = this
 			 if(this.beforeSubmit()) {
 				let params = {
-					url: host + '/user/api/group/login/',
+					url: host() + '/user/api/group/login/',
 					method: 'POST',
-					// data: {
-					// 	account: this.account.trim(),
-					// 	password: this.password.trim()
-					// }
 					data: {
-						account: '67444758@tianzhu.com',
-						password: '67444758'
+						account: this.account.trim(),
+						password: this.password.trim()
 					}
+					// data: {
+					// 	account: '67444758@tianzhu.com',
+					// 	password: '67444758'
+					// }
 				}
 				axiosRequest(params).then((res) => {
 					if(res.detail == 'login') {
-                       self.gotoWebview()
+					   self.gotoWebview()
+					   self.closeWindow()
 					}
 				}).catch((err) => {
 					
 				})
 			 }
+		 },
+		 getJudgeLogin() {
+			 let params = {url: host() + '/user/api/judge/login/'}
+			 let self = this
+			 axiosRequest(params).then((res) => {
+				console.log('res', res)
+                self.saveLoginState(res.detail)
+			 }).catch((err) => {
+				self.saveLoginState(err.detail)
+			 })
 		 }
 	 },
 	 updated() {
@@ -228,7 +240,7 @@
 		// }
 		// let menu = new Menu(options)
 		let update = new Update()
-		console.log('--process.env.NODE_ENV--', process.env.NODE_ENV)
+		this.getJudgeLogin()
 	 }
  }
 </script>

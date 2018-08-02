@@ -1,7 +1,6 @@
-import axios from 'axios';
+// import axios from 'axios';
+const axios = require('axios')
 const  { remote } = require('electron')
-// import { Message } from 'iview';
-// import Qs from 'qs';
 
 // 创建新实例
 var instance = axios.create({
@@ -43,34 +42,40 @@ instance.interceptors.request.use(function (config) {
 instance.interceptors.response.use(function (response) {
     return response;
   }, function (error) {
+	        console.log('error---<<<', error.response)
 			if(error && error.response){
 					switch (error.response.status) {
 						case 404 :
-						layer.alert('请求地址:' + error.config.url + '出错！')
-										break
+							layer.alert('请求地址:' + error.config.url + '出错！')
+							break
 						case 408 :
-						layer.alert('请求超时！')
-										break
+							layer.alert('请求超时！')
+							break
 						case 500 :
-						layer.alert('服务器出错！')
-										break
+							layer.alert('服务器出错！')
+							break
 						default  :
-						layer.alert(error.response.data.detail)
+							try {
+								layer.alert(error.response.data.detail)
+							}catch(err) {
+								console.log(err)
+								throw err
+							}
 					}
 			}
 			return Promise.reject(error);
   });
 
 // 通用 ajax
-export function axiosRequest(params) {
-   if(typeof params.url == undefined) {
+exports.axiosRequest = (params) => {
+	if(typeof params.url == undefined) {
    	 throw 'url should de must'
-   }
-   return new Promise((resolve, reject) => {
-   	 instance(params).then((resp) => {
-   	 	resolve(resp.data)
-   	 }).catch((error) => {
-   	 	reject(error)
-   	 })
-   })
+    }
+    return new Promise((resolve, reject) => {
+		instance(params).then((resp) => {
+			resolve(resp.data)
+		}).catch((error) => {
+			reject(error)
+		})
+    })
 }
