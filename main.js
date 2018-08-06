@@ -44,6 +44,7 @@ let createWindow = () => {
     ipcMain.on('max-main-window', function() {
       mainWindow.maximize()
     })
+
     ipcMain.on('show-main-window', function() {
       mainWindow.show()
     })
@@ -51,37 +52,28 @@ let createWindow = () => {
       mainWindow.hide()
     })
 
-    let childOptions = {
-      width: 1200,
-      height: 800,
-      center: false, // 窗口屏幕居中
-      x: 200,  // 窗口相对于屏幕的左偏移位置
-      y: 200,  // 窗口相对于屏幕的顶部偏移位置
-      frame: false
-    }
-
+    createWebviewWindow()
+    
     ipcMain.on('go-to-webview', () => {
-      if(childWindow != null) {
-        childWindow.setAlwaysOnTop(true)
-        return  // 避免重复打开多个webview页
-      }
-      childWindow = new BrowserWindow(childOptions)
-      childWindow.loadURL(`file:///${__dirname}/client/index_webview.html`) // 二级webview页面
-      childWindow.webContents.openDevTools()
+      createWebviewWindow()
     })
 
     ipcMain.on('close-webview-window', function() {
-      // childWindow.close()
-      // childWindow = null
-        childWindow.hide()
+      childWindow.close()
+      childWindow = null
     })
-
     ipcMain.on('min-webview-window', function() {
       childWindow.minimize()
     })
-
     ipcMain.on('max-webview-window', function() {
       childWindow.maximize()
+    })
+
+    ipcMain.on('hide-webview-window', function() {
+      childWindow.hide()
+    })
+    ipcMain.on('show-webview-window', function () {
+      childWindow.show()
     })
 
     updateHandle()
@@ -93,8 +85,30 @@ ipcMain.on('save-login-state', (event, state) => {
     console.log('global.loginState', global.loginState)
     if(global.loginState == 'login' && !mainWindow.isVisible()) {
       mainWindow.show()
+    }else {
+      mainWindow.hide()
+      childWindow.show()
     }
 })
+
+function createWebviewWindow() {
+  let childOptions = {
+    width: 1200,
+    height: 800,
+    center: false, // 窗口屏幕居中
+    x: 200,  // 窗口相对于屏幕的左偏移位置
+    y: 200,  // 窗口相对于屏幕的顶部偏移位置
+    frame: false,
+    show: false
+  }
+  if(childWindow != null) {
+    childWindow.setAlwaysOnTop(true)
+    return  // 避免重复打开多个webview页
+  }
+  childWindow = new BrowserWindow(childOptions)
+  childWindow.loadURL(`file:///${__dirname}/client/index_webview.html`) // 二级webview页面
+  childWindow.webContents.openDevTools()
+}
 
 function judgeLoginState () {
   if(!global.loginState || global.loginState == 'login') {
@@ -108,6 +122,7 @@ function judgeLoginState () {
 let getCooike = () => {
   session.defaultSession.cookies.get({url: host()}, (error, cookies) => {
     if(error) return
+    console.log('cookies', cookies)
     for(let i = 0; i < cookies.length; i++) {
       if(cookies[i].name === 'csrftoken') {
         global.csrftoken = cookies[i].value

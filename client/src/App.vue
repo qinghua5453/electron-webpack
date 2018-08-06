@@ -157,10 +157,13 @@ const { axiosRequest } = require('./config/axios-1.0.js')
 	 },
 	 methods: {
 		 gotoWebview () {
-            ipcRenderer.send('go-to-webview')
+			ipcRenderer.send('go-to-webview')
 		 },
 		 closeWindow () {
             ipcRenderer.send('close-main-window')
+		 },
+		 hideWindow () {
+            ipcRenderer.send('hide-main-window')
 		 },
 		 goToforgetPassword() {
 			 shell.openExternal('https://zhejiang.syzljh.cn/account/password/index.html');
@@ -192,20 +195,20 @@ const { axiosRequest } = require('./config/axios-1.0.js')
 				let params = {
 					url: host() + '/user/api/group/login/',
 					method: 'POST',
-					data: {
-						account: this.account.trim(),
-						password: this.password.trim()
-					}
 					// data: {
-					// 	account: '67444758@tianzhu.com',
-					// 	password: '67444758'
+					// 	account: this.account.trim(),
+					// 	password: this.password.trim()
 					// }
+					data: {
+						account: '67444758@tianzhu.com',
+						password: '67444758'
+					}
 				}
 				axiosRequest(params).then((res) => {
-					if(res.detail == 'login') {
-					   self.gotoWebview()
-					   self.closeWindow()
-					}
+						  self.hideWindow()
+					      self.gotoWebview()
+					//    self.closeWindow()
+						  self.saveLoginState(res.detail)
 				}).catch((err) => {
 					
 				})

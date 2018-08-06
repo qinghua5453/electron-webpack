@@ -1,13 +1,10 @@
 "use strict"
-const  { ipcRenderer } = require('electron')
+const  { ipcRenderer, remote } = require('electron')
 const  { axiosRequest } = require('./axios-1.0.js')
 const  { host } = require('./host.js')
 
 class Menu {
     constructor (options){
-        if(typeof (options.main) == undefined || typeof(options.webview) == undefined) {
-            throw 'main or webview must be add to options'
-        }
         if(typeof (options.target) == undefined) {
             throw 'target must be add'
         }
@@ -20,23 +17,17 @@ class Menu {
         this.back = this.getId('back')
         this.reload = this.getId('reload')
         this.webviewId = this.getId('webview')
-        this.main  = options.main ? true : false
-        this.webview = options.webview ? true : false
+
         this.min_window()
         this.max_window()
         this.close_window()
-        // if(this.main) {
-        //     this.getId('user-wrap').style.display = 'flex'
-        // }
-        if(this.webview) {
-            this.gotoUserMsg()
-            this.hoverUser()
-            this.forwardHandle()
-            this.backHandle()
-            this.reloadHandle()
-            this.loginOut()
-            this.getId('forward-back-reload-w').style.display = 'flex'
-        }
+        this.gotoUserMsg()
+        this.hoverUser()
+        this.forwardHandle()
+        this.backHandle()
+        this.reloadHandle()
+        this.loginOut()
+        this.getJudgeLogin()
     }
     getHtml() {
     let html = `<div class="nav-top-wrap">
@@ -48,8 +39,8 @@ class Menu {
                     </div>
                     <ul class="user-wrap" id="user-wrap">
                          <li class="user-icon"></li>
-                         <li class="big-li">
-                             杭州天猪科技有限公司
+                         <li class="big-li" style="min-width:150px;">
+                             <span id="User_msg">${remote.getGlobal('loginState')}</span>
                              <ul class="sub-ul" id="sub-ul">
                                <li id="my-admin">我的资料</li>
                                <li id="login-out">退出登录</li>
@@ -68,22 +59,22 @@ class Menu {
     getId (id) {
        return document.getElementById(id)
     }
+    saveLoginState(state) {
+        ipcRenderer.send('save-login-state', state)
+    }
     min_window () {
         this.min.addEventListener('click', () => {
-            if(this.main) ipcRenderer.send('min-main-window')
-            if(this.webview) ipcRenderer.send('min-webview-window')
+            ipcRenderer.send('min-webview-window')
         })
     }
     max_window () {
         this.max.addEventListener('click', () => {
-            if(this.main) ipcRenderer.send('max-main-window')
-            if(this.webview) ipcRenderer.send('max-webview-window')
+            ipcRenderer.send('max-webview-window')
         })
     }
     close_window () {
         this.close.addEventListener('click', () => {
-            if(this.main) ipcRenderer.send('close-main-window')
-            if(this.webview) ipcRenderer.send('close-webview-window')
+            ipcRenderer.send('close-webview-window')
         })
     }
     forwardHandle () {
@@ -124,11 +115,27 @@ class Menu {
         this.getId('login-out').addEventListener('click', () => {
            let params = {url: host() + '/user/api/group/logout/'}
            axiosRequest(params).then((res) => {
-            ipcRenderer.send('close-webview-window')
+              ipcRenderer.send('close-webview-window')
+              ipcRenderer.send('show-main-window')
              console.log(res)
            }).catch((err) => {
              console.log(err)
            })
+        })
+    }
+    getJudgeLogin() {
+        console.log('0000<<<--', remote.getGlobal('loginState'))
+        if(remote.getGlobal('loginState')) {
+            return
+        }
+        let params = {url: host() + '/user/api/judge/login/'}
+        let self = this
+        axiosRequest(params).then((res) => {
+           console.log('res<<<<<', res)
+           self.getId('User_msg').innerHTML = res.detail
+           self.saveLoginState(res.detail)
+        }).catch((err) => {
+           self.saveLoginState(err.detail)
         })
     }
 }

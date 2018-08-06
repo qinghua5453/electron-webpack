@@ -47,7 +47,7 @@
   background-image: url('../resource/close.png');
 }
 .nav-top-wrap .forward-back-reload-w {
-  display: none;
+  display: flex;
   flex: 5;
   margin-left:3%;
 }
