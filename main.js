@@ -9,8 +9,8 @@ app.on('ready', () => {
 });
 
 app.on('window-all-closed', () => {
-  global.loginState = null
-  console.log('-------closed-------', global.loginState)
+  global.loginState = 'login'
+  // console.log('-------closed-------', global.loginState)
 })
 
 autoUpdater.autoDownload = false; //关闭自动更新 通过用户点击事件 发起是否更新
@@ -53,7 +53,7 @@ let createWindow = () => {
     })
 
     createWebviewWindow()
-    
+
     ipcMain.on('go-to-webview', () => {
       createWebviewWindow()
     })
@@ -111,6 +111,7 @@ function createWebviewWindow() {
 }
 
 function judgeLoginState () {
+  console.log('global.loginState-----', global.loginState)
   if(!global.loginState || global.loginState == 'login') {
     mainWindow.show()
   }
@@ -122,7 +123,7 @@ function judgeLoginState () {
 let getCooike = () => {
   session.defaultSession.cookies.get({url: host()}, (error, cookies) => {
     if(error) return
-    console.log('cookies', cookies)
+    // console.log('cookies', cookies)
     for(let i = 0; i < cookies.length; i++) {
       if(cookies[i].name === 'csrftoken') {
         global.csrftoken = cookies[i].value
@@ -134,6 +135,7 @@ let getCooike = () => {
 let updateHandle = () => {
   let message = {
       error: '检查更新出错',
+
       checking: '正在检查更新……',
       // updateAva: '检测到新版本，正在下载……',
       updateAva: '检测到新版本,必须更新后才能使用',
