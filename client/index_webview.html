@@ -21,11 +21,13 @@
 <body>
     <div id="menu"></div>
     <div class="nav-body-views">
-        <webview id="webview" src="http://127.0.0.1:9000/account/home/"></webview>
+        <webview id="webview" src=""></webview>
     </div>
     <script src="./asset/static/js/layui/layui.js"></script>
     <script>
         let Menu = require('./src/config/menu.js')
+        let { host } = require('./src/config/host.js')
+        document.getElementById('webview').setAttribute('src', host() + '/account/home/')
         let options = {
             target: 'menu'
         }

@@ -117,7 +117,7 @@
 		<!-- <div id="menu"></div> -->
 	    <!-- <button class="color" @click="gotoWebview">去webview页面</button> -->
 		<div class="homePage_bg">
-            <span class="close" @click="closeWindow"></span>
+            <span class="close" @click="closeMainWindow"></span>
 			<div class="content-wrap">
                 <span class="log"></span>
 				<span class="service">客服热线：400-6755-008</span>
@@ -156,14 +156,11 @@ const { axiosRequest } = require('./config/axios-1.0.js')
 		  }
 	 },
 	 methods: {
-		 gotoWebview () {
-			ipcRenderer.send('go-to-webview')
+		 openWebviewWindow () {
+			ipcRenderer.send('open-webview-window')
 		 },
-		 closeWindow () {
+		 closeMainWindow () {
             ipcRenderer.send('close-main-window')
-		 },
-		 hideWindow () {
-            ipcRenderer.send('hide-main-window')
 		 },
 		 goToforgetPassword() {
 			 shell.openExternal('https://zhejiang.syzljh.cn/account/password/index.html');
@@ -195,20 +192,20 @@ const { axiosRequest } = require('./config/axios-1.0.js')
 				let params = {
 					url: host() + '/user/api/group/login/',
 					method: 'POST',
-					// data: {
-					// 	account: this.account.trim(),
-					// 	password: this.password.trim()
-					// }
 					data: {
-						account: '67444758@tianzhu.com',
-						password: '67444758'
+						account: this.account.trim(),
+						password: this.password.trim()
 					}
+					// data: {
+					// 	account: '67444758@tianzhu.com',
+					// 	password: '67444758'
+					// }
 				}
 				axiosRequest(params).then((res) => {
-						  self.hideWindow()
-					      self.gotoWebview()
-					//    self.closeWindow()
-						  self.saveLoginState(res.detail)
+					    console.log('res', res)
+						self.closeMainWindow()
+						self.saveLoginState(res.detail)
+						self.openWebviewWindow()
 				}).catch((err) => {
 					
 				})
@@ -225,25 +222,9 @@ const { axiosRequest } = require('./config/axios-1.0.js')
 			 })
 		 }
 	 },
-	 updated() {
-
-	 },
 	 mounted() {
-		// 直接 引入出现跨域问题。
-		// 需要结合webpack-dev-server 或者nginx 配置跨域问题
-		//  let params = {
-		// 	 url: '/agreement/api/product_exchanges_state/828546bd-f4d5-4cc2-8272-a40490849ae7'
-		//  }
-		//  axiosRequest(params).then((resp) => {
-        //    console.log('resp', resp)
-		//  })
-		// let options = {
-		// 	target: 'menu',
-		// 	main: true
-		// }
-		// let menu = new Menu(options)
 		let update = new Update()
-		this.getJudgeLogin()
+		// this.getJudgeLogin()
 	 }
  }
 </script>

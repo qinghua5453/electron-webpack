@@ -9,55 +9,25 @@ app.on('ready', () => {
 });
 
 app.on('window-all-closed', () => {
-  global.loginState = 'login'
-  // console.log('-------closed-------', global.loginState)
+  // global.loginState = 'login'
 })
 
 autoUpdater.autoDownload = false; //关闭自动更新 通过用户点击事件 发起是否更新
 
 let createWindow = () => {
-    let mainOptions = {
-      width: 563,
-      height: 549,
-      frame: false, // 隐藏窗口导航
-      resizable: true,
-      show: false,
-      webPreferences: {webSecurity: false}
-    }
-    mainWindow = new BrowserWindow(mainOptions);
-    if(process.env.NODE_ENV == 'development') {
-      mainWindow.loadURL('http://localhost:3000')
-    }else {
-      mainWindow.loadURL(`file:///${__dirname}/client/index.html`); //本地开发主页面
-    }
-    getCooike()
-
-    mainWindow.webContents.openDevTools()
-
+    // main-window
+    ipcMain.on('open-main-window', function() {
+      createMainWindow()
+    })
     ipcMain.on('close-main-window', function() {
       mainWindow.close()
       mainWindow = null
     })
-    ipcMain.on('min-main-window', function() {
-      mainWindow.minimize()
-    })
-    ipcMain.on('max-main-window', function() {
-      mainWindow.maximize()
-    })
 
-    ipcMain.on('show-main-window', function() {
-      mainWindow.show()
-    })
-    ipcMain.on('hide-main-window', function() {
-      mainWindow.hide()
-    })
-
-    createWebviewWindow()
-
-    ipcMain.on('go-to-webview', () => {
+    // webview-window
+    ipcMain.on('open-webview-window', () => {
       createWebviewWindow()
     })
-
     ipcMain.on('close-webview-window', function() {
       childWindow.close()
       childWindow = null
@@ -68,38 +38,42 @@ let createWindow = () => {
     ipcMain.on('max-webview-window', function() {
       childWindow.maximize()
     })
-
-    ipcMain.on('hide-webview-window', function() {
-      childWindow.hide()
+    
+    ipcMain.on('save-login-state', (event, state) => {
+      global.loginState = state
     })
-    ipcMain.on('show-webview-window', function () {
-      childWindow.show()
-    })
-
+    
     updateHandle()
     judgeLoginState()
+    getCooike()
 }
 
-ipcMain.on('save-login-state', (event, state) => {
-    global.loginState = state
-    console.log('global.loginState', global.loginState)
-    if(global.loginState == 'login' && !mainWindow.isVisible()) {
-      mainWindow.show()
-    }else {
-      mainWindow.hide()
-      childWindow.show()
-    }
-})
+let createMainWindow = () => {
+  let mainOptions = {
+    width: 563,
+    height: 549,
+    frame: false, // 隐藏窗口导航
+    resizable: true,
+    webPreferences: {webSecurity: false}
+  }
+  mainWindow = new BrowserWindow(mainOptions);
+  if(process.env.NODE_ENV == 'development') {
+    mainWindow.loadURL('http://localhost:3000')
+    mainWindow.webContents.openDevTools()
+  }else {
+    mainWindow.webContents.openDevTools()
+    mainWindow.loadURL(`file:///${__dirname}/client/index.html`); //本地开发主页面
+  }
+}
 
-function createWebviewWindow() {
+let createWebviewWindow = () => {
   let childOptions = {
     width: 1200,
     height: 800,
+    frame: false, // 隐藏窗口导航
     center: false, // 窗口屏幕居中
     x: 200,  // 窗口相对于屏幕的左偏移位置
     y: 200,  // 窗口相对于屏幕的顶部偏移位置
-    frame: false,
-    show: false
   }
   if(childWindow != null) {
     childWindow.setAlwaysOnTop(true)
@@ -107,16 +81,18 @@ function createWebviewWindow() {
   }
   childWindow = new BrowserWindow(childOptions)
   childWindow.loadURL(`file:///${__dirname}/client/index_webview.html`) // 二级webview页面
-  childWindow.webContents.openDevTools()
+  // if(process.env.NODE_ENV == 'development') { 
+    childWindow.webContents.openDevTools()
+  // }
 }
 
-function judgeLoginState () {
-  console.log('global.loginState-----', global.loginState)
+let judgeLoginState = () => {
+  console.log('global.loginState<<<', global.loginState)
   if(!global.loginState || global.loginState == 'login') {
-    mainWindow.show()
+    createMainWindow()
   }
   if(global.loginState && global.loginState != 'login') {
-    childWindow.show()
+    createWebviewWindow()
   }
 }
 
@@ -135,7 +111,6 @@ let getCooike = () => {
 let updateHandle = () => {
   let message = {
       error: '检查更新出错',
-
       checking: '正在检查更新……',
       // updateAva: '检测到新版本，正在下载……',
       updateAva: '检测到新版本,必须更新后才能使用',

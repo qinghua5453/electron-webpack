@@ -116,10 +116,10 @@ class Menu {
            let params = {url: host() + '/user/api/group/logout/'}
            axiosRequest(params).then((res) => {
               ipcRenderer.send('close-webview-window')
-              ipcRenderer.send('show-main-window')
-             console.log(res)
+              ipcRenderer.send('open-main-window')
+              console.log(res)
            }).catch((err) => {
-             console.log(err)
+              console.log(err)
            })
         })
     }
@@ -133,9 +133,9 @@ class Menu {
         axiosRequest(params).then((res) => {
            console.log('res<<<<<', res)
            self.getId('User_msg').innerHTML = res.detail
-           self.saveLoginState(res.detail)
+        //    self.saveLoginState(res.detail)
         }).catch((err) => {
-           self.saveLoginState(err.detail)
+        //    self.saveLoginState(err.detail)
         })
     }
 }

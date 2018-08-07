@@ -50,13 +50,13 @@
     }
   },
   "devDependencies": {
+    "axios": "^0.18.0",
     "electron": "^2.0.3",
     "electron-builder": "^20.15.1",
     "electron-drag": "^1.2.0"
   },
   "dependencies": {
     "ajv": "^6.5.1",
-    "electron-navigation": "^1.5.8",
     "electron-updater": "^2.21.10"
   }
 }

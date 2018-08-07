@@ -1,4 +1,3 @@
-// import axios from 'axios';
 const axios = require('axios')
 const  { remote } = require('electron')
 
