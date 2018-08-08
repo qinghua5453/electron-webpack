@@ -55,7 +55,6 @@
   },
   "dependencies": {
     "ajv": "^6.5.1",
-    "electron-drag": "^1.2.0",
     "electron-updater": "^2.21.10"
   }
 }

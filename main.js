@@ -15,6 +15,11 @@ app.on('window-all-closed', () => {
 autoUpdater.autoDownload = false; //关闭自动更新 通过用户点击事件 发起是否更新
 
 let createWindow = () => {
+    // 一些同步函数
+    updateHandle()
+    judgeLoginState()
+    getCooike()
+
     // main-window
     ipcMain.on('open-main-window', function() {
       createMainWindow()
@@ -42,10 +47,6 @@ let createWindow = () => {
     ipcMain.on('save-login-state', (event, state) => {
       global.loginState = state
     })
-    
-    updateHandle()
-    judgeLoginState()
-    getCooike()
 }
 
 let createMainWindow = () => {

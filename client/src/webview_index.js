@@ -6,10 +6,8 @@
         target: 'menu'
     }
     let menu = new Menu(options)
-    // const drag = import 'electron-drag';
-    // import drag from 'electron-drag'
     // makeDraggable('#menu')
-
+    
     function makeDraggable(dom) {
         let el = document.querySelector(dom)
         let clear
