@@ -1,5 +1,7 @@
 'use strict'
 const fs = require('fs')
+const config = require('./package.config.js')
+
 let getManifest = () => {
     let mfPath = './asset/build/manifest.json'
 
@@ -17,7 +19,7 @@ let getManifest = () => {
 }
 
 let modifyHtmlStr = (data, bundle) => {
-    if(/<script.*\.bundle\.js"><\/script>/i.test(data) && /<link rel="stylesheet".*\.bundle\.css"\/?>/i.test(data)) {
+    if(/<script.*\.bundle\.js"><\/script>/i.test(data)&& /<link rel="stylesheet".*\.bundle\.css"\/?>/i.test(data)) {
         if(bundle.js) {
             data = data.replace(/<script.*\.bundle\.js"><\/script>/i, '<script src="' + bundle.js + '"></script>')
         }
@@ -57,21 +59,18 @@ let updateProdHTMLPages = () => {
                 }
             }
         }
-        for(let key in bundleMap) {
-            let filePath = './index.html'
+        let filePaths = ['./index.html', './index_webview.html']
+        let key
+        for(let i = 0; i < filePaths.length; i++) {
+            let filePath = filePaths[i]
             fs.readFile(filePath, (err, data) => {
-                if(err) {
-                    console.log('[error]: failed to read ', filePath, err)
-                    return
-                }
+                if (err) return
+                if(i == 0)  key = 'src/main'
+                if(i == 1)  key = 'src/webview_index'
                 data = modifyHtmlStr(data.toString(), bundleMap[key])
                 fs.writeFile(filePath, data, (err, data) => {
-                    if(err) {
-                        console.log('[error]: failed to update ' + filePath)
-                        return
-                    }
-                    console.log('[success]: ' + filePath + ' updated successfully')
-                })
+                    if (err) return
+               })
             })
         }
     }).catch((err) => {
@@ -79,29 +78,39 @@ let updateProdHTMLPages = () => {
     })
 }
 
-let setDevHTMLPages = () => {
-
-    let bundleMap = {
-        js: '/asset/build/app.bundle.js',
-        css: '/asset/build/app.bundle.css'
+let bundleMap = () => {
+   let bundles = {}
+   let entries = config.entries
+   let len = entries.length
+   let host = 'http://localhost:3000'
+   for(let i = 0; i < len; i++) {   
+        let entry = entries[i]
+        let prefix = config.outputDir.replace('.', '')
+        entry = entry.replace('./', '').replace('.js', '')
+        bundles[entry] = {
+            'js': host + prefix + entry + '.bundle.js'
+        }
+        bundles[entry]['css'] = host + prefix + entry + '.bundle.css'
     }
-    let filePath = './index.html'
-    fs.readFile(filePath, (err, data) => {
-        if(err) {
-            console.log('[error]: failed to read ' + filePath)
-            return
-        }
-        for(let key in bundleMap) {
-            data = modifyHtmlStr(data.toString(), bundleMap)
+    return bundles
+}
+
+let setDevHTMLPages = () => {
+    let bundles = bundleMap()
+    let filePaths = ['./index.html', './index_webview.html']
+    let key
+    for(let i = 0; i < filePaths.length; i++) {
+        let filePath = filePaths[i]
+        fs.readFile(filePath, (err, data) => {
+            if (err) return
+            if(i == 0)  key = 'src/main'
+            if(i == 1)  key = 'src/webview_index'
+            data = modifyHtmlStr(data.toString(), bundles[key])
             fs.writeFile(filePath, data, (err, data) => {
-                if(err) {
-                    console.log('[error]: failed to update ' + filePath)
-                    return
-                }
-                console.log('[success]: ' + filePath + ' updated successfully')
-            })
-        }
-    })
+                if (err) return
+           })
+        })
+    }
 }
 
 let isProduction  = process.env.NODE_ENV === 'development' ? false : true   

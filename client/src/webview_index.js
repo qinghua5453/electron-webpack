@@ -1,31 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>首营资料共享平台</title>
-    <link rel="stylesheet" href="./asset/static/js/layui/css/layui.css">
-    <link rel="stylesheet" href="./asset/build/src/main.ce7981a.bundle.css">
-    <style>
-        html, body {        
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            font-family: 'Microsoft Yahei'
-        }
-    </style>
-</head>
+    require('./config/menu.css')
+    let Menu = require('./config/menu.js')
+    let { host } = require('./config/host.js')
+    document.getElementById('webview').setAttribute('src', host() + '/account/home/')
+    let options = {
+        target: 'menu'
+    }
+    let menu = new Menu(options)
+    // const drag = import 'electron-drag';
+    // import drag from 'electron-drag'
+    // makeDraggable('#menu')
 
-<body>
-    <div id="syjh"></div>
-    <script src="./asset/static/js/layui/layui.all.js"></script>
-    <script src="./asset/build/src/main.ce7981a.bundle.js"></script>
-</body>
-<script>
-    makeDraggable('#syjh')
     function makeDraggable(dom) {
         let el = document.querySelector(dom)
         let clear
         try {
-            const drag = require('electron-drag');
+            // const drag = require('electron-drag');
             if (drag.supported) {
                 clear = drag(el);
                 clear()
@@ -64,5 +53,3 @@
             }
         });
     }
-</script>
-</html>

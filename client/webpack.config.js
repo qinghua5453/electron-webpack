@@ -1,5 +1,7 @@
 'use strict'
 const path = require('path')
+const fs = require('fs')
+const config = require('./package.config.js')
 // const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
@@ -7,6 +9,25 @@ const webpackManifestPlugin = require('webpack-manifest-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 let isProduction = process.env.NODE_ENV == 'production' ? true : false
 console.log('process.env.NODE_ENV', process.env.NODE_ENV)
+
+let entryFiles = () => {
+  let entryObj = {}
+  // 判断是否配置入口文件
+  const entries = config.entries
+  if(entries === undefined || entries === 0) {
+      throw ('[ERROR]: list of entry files can not be null')
+  }
+  entries.map(item => {
+      fs.statSync(item, (err, state) => {
+          if(err) {
+              throw ('[ERROR]: entry ' + item + ' is not a correct path')
+          }
+      })
+      const bundlePath = item.replace(/^\.\//, '').replace(/\.js/, '')
+      entryObj[bundlePath] = item
+  })
+  return entryObj
+}
 
 let getPlugin = () => {
   let plugins = [new VueLoaderPlugin()]
@@ -21,10 +42,10 @@ let getPlugin = () => {
     allChunks: isProduction ? true : false
   }))
   if(isProduction) {
-    plugins.push(new CleanWebpackPlugin(['./asset/build/']))
+    plugins.push(new CleanWebpackPlugin([config.outputDir]))
     plugins.push(new webpackManifestPlugin({
       fileName: 'manifest.json',
-      publicPath: './asset/build/'
+      publicPath: config.outputDir
     }))
   }
   return plugins
@@ -33,13 +54,11 @@ let getPlugin = () => {
 module.exports = {
     mode: isProduction ? 'production' : 'development',
     target: 'electron-renderer',
-    entry:{
-        app:'./src/main.js',
-    },
+    entry: entryFiles(),
     output: {
-      path: path.join(__dirname, '/asset/build/'), // 输出路径 生产环境可以看见
+      path: path.join(__dirname, config.outputDir), // 输出路径 生产环境可以看见
       filename: isProduction ? '[name].[hash:7].bundle.js' : '[name].bundle.js',
-      publicPath: '/asset/build/' // 虚拟目录
+      publicPath: config.outputDir // 虚拟目录
     },
     module: {
         rules :[

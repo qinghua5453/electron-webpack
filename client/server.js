@@ -9,14 +9,7 @@ const server = new WebpackDevServer(compiler,{
 	historyApiFallback: true,
     disableHostCheck: true,
     inline: true,
-    publicPath: "/asset/build/", // 对应webpack output publicPath
-    // proxy: {
-    //     '/login/' : {
-    //         target: 'http://localhost:9000',
-    //         changeOrigin: true,
-    //         secure: false
-    //     }
-    // }
+    publicPath: "/asset/build/" // 对应webpack output publicPath
 })
 
 server.listen(3000,function(err){
