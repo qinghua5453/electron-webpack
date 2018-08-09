@@ -74,7 +74,8 @@ class Menu {
     }
     close_window () {
         this.close.addEventListener('click', () => {
-            ipcRenderer.send('close-webview-window')
+            // ipcRenderer.send('close-webview-window')
+            ipcRenderer.send('hide-webview-window')
         })
     }
     forwardHandle () {
@@ -112,11 +113,13 @@ class Menu {
         })
     }
     loginOut () {
+        let self = this
         this.getId('login-out').addEventListener('click', () => {
            let params = {url: host() + '/user/api/group/logout/'}
            axiosRequest(params).then((res) => {
               ipcRenderer.send('close-webview-window')
               ipcRenderer.send('open-main-window')
+              self.saveLoginState('login')
               console.log(res)
            }).catch((err) => {
               console.log(err)

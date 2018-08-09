@@ -117,7 +117,7 @@
 		<!-- <div id="menu"></div> -->
 	    <!-- <button class="color" @click="gotoWebview">去webview页面</button> -->
 		<div class="homePage_bg">
-            <span class="close" @click="closeMainWindow"></span>
+            <span class="close" @click="hideMainWindow"></span>
 			<div class="content-wrap">
                 <span class="log"></span>
 				<span class="service">客服热线：400-6755-008</span>
@@ -161,6 +161,9 @@ const { axiosRequest } = require('./config/axios-1.0.js')
 		 },
 		 closeMainWindow () {
             ipcRenderer.send('close-main-window')
+		 },
+		 hideMainWindow() {
+            ipcRenderer.send('hide-main-window')
 		 },
 		 goToforgetPassword() {
 			 shell.openExternal('https://zhejiang.syzljh.cn/account/password/index.html');

@@ -1,9 +1,11 @@
 // index.js
-const { app, BrowserWindow, ipcMain, session } = require('electron')
+const { app, BrowserWindow, ipcMain, session, Tray } = require('electron')
+const path = require('path')
 const { autoUpdater } = require('electron-updater')
 const { host } = require('./client/src/config/host.js')
 let mainWindow = null;
 let childWindow = null;
+let tray = null
 app.on('ready', () => {
   createWindow()
 });
@@ -19,6 +21,7 @@ let createWindow = () => {
     updateHandle()
     judgeLoginState()
     getCooike()
+    newTray()
 
     // main-window
     ipcMain.on('open-main-window', function() {
@@ -27,6 +30,9 @@ let createWindow = () => {
     ipcMain.on('close-main-window', function() {
       mainWindow.close()
       mainWindow = null
+    })
+    ipcMain.on('hide-main-window', function() {
+      mainWindow.hide()
     })
 
     // webview-window
@@ -37,6 +43,10 @@ let createWindow = () => {
       childWindow.close()
       childWindow = null
     })
+    ipcMain.on('hide-webview-window', function() {
+      childWindow.hide()
+    })
+
     ipcMain.on('min-webview-window', function() {
       childWindow.minimize()
     })
@@ -67,14 +77,25 @@ let createMainWindow = () => {
   }
 }
 
+let newTray = () => {
+  let filePath
+  if(process.platform === 'darwin') {
+    filePath = path.join(__dirname, '/static/images/background.png')
+  }else {
+    filePath = path.join(__dirname, '/static/images/icon.ico')
+  }
+  tray = new Tray(filePath)
+  tray.on('click', ()=>{
+    if(mainWindow) mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+    if(childWindow) childWindow.isVisible() ? childWindow.hide() : childWindow.show()
+  })
+}
+
 let createWebviewWindow = () => {
   let childOptions = {
     width: 1200,
     height: 800,
     frame: false, // 隐藏窗口导航
-    center: false, // 窗口屏幕居中
-    x: 200,  // 窗口相对于屏幕的左偏移位置
-    y: 200,  // 窗口相对于屏幕的顶部偏移位置
   }
   if(childWindow != null) {
     childWindow.setAlwaysOnTop(true)
