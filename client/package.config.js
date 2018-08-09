@@ -1,4 +1,5 @@
 let config = {
+    // 入口文件 顺序不能乱 不然打包出错
     entries: [
         './src/main.js',
         './src/webview_index.js'

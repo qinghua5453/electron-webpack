@@ -20,7 +20,7 @@ let createWindow = () => {
     // 一些同步函数
     updateHandle()
     judgeLoginState()
-    getCooike()
+    saveCsrftoken()
     newTray()
 
     // main-window
@@ -46,16 +46,19 @@ let createWindow = () => {
     ipcMain.on('hide-webview-window', function() {
       childWindow.hide()
     })
-
     ipcMain.on('min-webview-window', function() {
       childWindow.minimize()
     })
     ipcMain.on('max-webview-window', function() {
       childWindow.maximize()
     })
-    
+
+    // 公共状态交互
     ipcMain.on('save-login-state', (event, state) => {
       global.loginState = state
+    })
+    ipcMain.on('save-csrftoken', () => {
+      saveCsrftoken()
     })
 }
 
@@ -109,7 +112,6 @@ let createWebviewWindow = () => {
 }
 
 let judgeLoginState = () => {
-  console.log('global.loginState<<<', global.loginState)
   if(!global.loginState || global.loginState == 'login') {
     createMainWindow()
   }
@@ -118,18 +120,18 @@ let judgeLoginState = () => {
   }
 }
 
-let getCooike = () => {
+let saveCsrftoken = () => {
   session.defaultSession.cookies.get({url: host()}, (error, cookies) => {
     if(error) return
-    // console.log('cookies', cookies)
     for(let i = 0; i < cookies.length; i++) {
       if(cookies[i].name === 'csrftoken') {
         global.csrftoken = cookies[i].value
         break
       }
     }
- })
+  })
 }
+
 let updateHandle = () => {
   let message = {
       error: '检查更新出错',
