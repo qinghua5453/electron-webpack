@@ -150,7 +150,8 @@ const session = remote.session
           return {
 			 account: '',
 			 password: '',
-			 disabled: false
+			 disabled: false,
+			 index: null
 		  }
 	 },
 	 methods: {
@@ -167,7 +168,7 @@ const session = remote.session
             ipcRenderer.send('save-csrftoken')
 		 },
 		 goToforgetPassword() {
-			 shell.openExternal('https://zhejiang.syzljh.cn/account/password/index.html');
+			 shell.openExternal( host() + '/account/password/index.html');
 		 },
 		 saveLoginState(state) {
             ipcRenderer.send('save-login-state', state)
@@ -240,7 +241,7 @@ const session = remote.session
 				let index = layer.load(1, {shade: false});
 				self.disabled = true
 				axiosRequest(params).then((res) => {
-					let date = Math.round(new Date().getTime() / 1000) + 10
+					let date = Math.round(new Date().getTime() / 1000) + 1000
 					layer.close(index)
 					console.log('res', res)
 					self.setCookie('name', params.data.account)
@@ -258,7 +259,7 @@ const session = remote.session
 	 },
 	 created() {
 		//  test 本地调用专用函数
-	    //   this.removeCookie('loginState')
+		//   this.removeCookie('loginState')
 	 },
 	 mounted() {
 		let drag = new Drag('syjh')

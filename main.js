@@ -5,6 +5,8 @@ const { autoUpdater } = require('electron-updater')
 const { host } = require('./client/src/config/host.js')
 let mainWindow = null;
 let childWindow = null;
+let mainLoadingWindow = null;
+let webviewLoadingWindow = null;
 let tray = null
 app.on('ready', () => {
   createWindow()
@@ -68,16 +70,36 @@ let createMainWindow = () => {
     height: 549,
     frame: false, // 隐藏窗口导航
     resizable: true,
+    show: false,
     webPreferences: {webSecurity: false}
   }
+  // 深拷贝
+  let loadingOptions = Object.assign({}, mainOptions)
   mainWindow = new BrowserWindow(mainOptions);
+  mainLoadingWindow = new BrowserWindow(loadingOptions)
+
+  mainLoadingWindow.loadURL(`file:///${__dirname}/client/index_loading.html`);
   if(process.env.NODE_ENV == 'development') {
     mainWindow.loadURL('http://localhost:3000')
     mainWindow.webContents.openDevTools()
   }else {
-    mainWindow.webContents.openDevTools()
     mainWindow.loadURL(`file:///${__dirname}/client/index.html`); //本地开发主页面
   }
+  mainLoadingWindow.webContents.on('did-finish-load', () => {
+    mainLoadingWindow.show()
+  })
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.show()
+    if(mainLoadingWindow) {
+      mainLoadingWindow.close()
+    }
+  })
+  mainLoadingWindow.on('closed', () => {
+    mainLoadingWindow = null
+  })
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
 }
 
 let newTray = () => {
@@ -99,16 +121,38 @@ let createWebviewWindow = () => {
     width: 1200,
     height: 800,
     frame: false, // 隐藏窗口导航
+    show: false
   }
+  // 深拷贝
+  let loadingOptions = Object.assign({}, childOptions)
   if(childWindow != null) {
     childWindow.setAlwaysOnTop(true)
     return  // 避免重复打开多个webview页
   }
+  webviewLoadingWindow = new BrowserWindow(loadingOptions)
   childWindow = new BrowserWindow(childOptions)
+
+  webviewLoadingWindow.loadURL(`file:///${__dirname}/client/index_loading.html`)
   childWindow.loadURL(`file:///${__dirname}/client/index_webview.html`) // 二级webview页面
-  // if(process.env.NODE_ENV == 'development') { 
+  if(process.env.NODE_ENV == 'development') { 
     childWindow.webContents.openDevTools()
-  // }
+  }
+
+  webviewLoadingWindow.webContents.on('did-finish-load', () => {
+    webviewLoadingWindow.show()
+  })
+  childWindow.webContents.on('did-finish-load', () => {
+    childWindow.show()
+    if(webviewLoadingWindow) {
+      webviewLoadingWindow.close()
+    }
+  })
+  webviewLoadingWindow.on('closed', () => {
+    webviewLoadingWindow = null
+  })
+  childWindow.on('closed', () => {
+    childWindow = null
+  })
 }
 
 let judgeLoginState = () => {
