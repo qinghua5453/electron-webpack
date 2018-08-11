@@ -5,9 +5,9 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "export NODE_ENV='development' && electron .",
-    "build": "export NODE_ENV='production' && electron .",
-    "dist:win64": "export NODE_ENV=production && electron-builder --win --x64"
+    "dev": "cross-env NODE_ENV=development electron .",
+    "build": "cross-env NODE_ENV=production electron .",
+    "dist:win64": "cross-env NODE_ENV=production electron-builder --win --x64"
   },
   "author": "",
   "license": "ISC",
@@ -51,7 +51,8 @@
   },
   "devDependencies": {
     "electron": "^2.0.3",
-    "electron-builder": "^20.15.1"
+    "electron-builder": "^20.15.1",
+    "cross-env": "^5.2.0"
   },
   "dependencies": {
     "ajv": "^6.5.1",

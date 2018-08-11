@@ -5,8 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "export NODE_ENV='development' && node server.js",
-    "build": "export NODE_ENV='production' && webpack --progress && npm run modify",
+    "dev": "cross-env NODE_ENV=development node server.js",
+    "build": "cross-env NODE_ENV=production webpack --progress && node modify.html.bundles.js",
     "modify": "node --harmony modify.html.bundles.js"
   },
   "author": "",
