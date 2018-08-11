@@ -6,12 +6,18 @@ class Drag {
         throw 'target must be add'
       }
       this.target = document.getElementById(target)
+      this.ondragstart()
+      this.ondrag()
     }
     ondragstart () {
-        
+      this.target.addEventListener('dragstart', () => {
+        console.log('dragstart')
+      })
     }
     ondrag () {
-
+      this.target.addEventListener('drag', () => {
+        console.log('drag')
+      })
     }
     ondragend () {
 
@@ -29,4 +35,4 @@ class Drag {
 
     }
 }
-exports.Drag
+module.exports = Drag

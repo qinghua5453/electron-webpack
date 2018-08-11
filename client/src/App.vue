@@ -110,7 +110,7 @@
 }
 </style>
 <template>
-	<div id="syjh">
+	<div id="syjh" draggable="true">
 		<div class="homePage_bg">
             <span class="close" @click="hideMainWindow"></span>
 			<div class="content-wrap">
@@ -137,6 +137,7 @@
 const  { ipcRenderer, shell, remote } = require('electron')
 const Update = require('./config/update.js')
 const { host } = require('./config/host.js')
+const  Drag  = require('./config/drag.js')
 const { axiosRequest } = require('./config/axios-1.0.js')
 const session = remote.session
 
@@ -175,8 +176,6 @@ const session = remote.session
 			let self = this
             session.defaultSession.cookies.get({ url: host()}, function (error, cookies) {
 				if(error) return
-				console.log('cookies<<<<<<', cookies);
-				console.log('cookies----', JSON.stringify(cookies))
 				for(let i = 0; i < cookies.length; i++) {
 					let cookie = cookies[i]
 					if(cookie.name == 'name') {
@@ -213,18 +212,18 @@ const session = remote.session
 			 let account = this.account.trim()
 			 let password = this.password.trim()
 			 let account_reg = /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@([a-zA-Z0-9]+[-.])+[a-zA-Z0-9]{2,4}$/
-			//  if(!account) {
-			// 	 layer.alert('请输入用户名（邮箱）')
-			// 	 return false
-			//  }
-			//  if(!account_reg.test(account)) {
-			// 	 layer.alert('请输入正确格式的邮箱')
-			// 	 return false
-			//  }
-			//  if(!password) {
-			// 	 layer.alert('请输入密码')
-			// 	 return false
-			//  }
+			 if(!account) {
+				 layer.alert('请输入用户名（邮箱）')
+				 return false
+			 }
+			 if(!account_reg.test(account)) {
+				 layer.alert('请输入正确格式的邮箱')
+				 return false
+			 }
+			 if(!password) {
+				 layer.alert('请输入密码')
+				 return false
+			 }
 			 return true
 		 },
 		 postSubmit() {
@@ -237,10 +236,6 @@ const session = remote.session
 						account: this.account.trim(),
 						password: this.password.trim()
 					}
-					// data: {
-					// 	account: '67444758@tianzhu.com',
-					// 	password: '67444758'
-					// }
 				}
 				let index = layer.load(1, {shade: false});
 				self.disabled = true
@@ -262,9 +257,11 @@ const session = remote.session
 		 }
 	 },
 	 created() {
+		//  test 本地调用专用函数
 	    //   this.removeCookie('loginState')
 	 },
 	 mounted() {
+		let drag = new Drag('syjh')
 		let update = new Update()
 		this.getNameAndPassword()
 	 }

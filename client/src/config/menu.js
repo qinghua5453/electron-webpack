@@ -27,7 +27,6 @@ class Menu {
         this.backHandle()
         this.reloadHandle()
         this.loginOut()
-        this.getJudgeLogin()
     }
     getHtml() {
     let html = `<div class="nav-top-wrap">
@@ -74,7 +73,6 @@ class Menu {
     }
     close_window () {
         this.close.addEventListener('click', () => {
-            // ipcRenderer.send('close-webview-window')
             ipcRenderer.send('hide-webview-window')
         })
     }
@@ -124,21 +122,6 @@ class Menu {
            }).catch((err) => {
               console.log(err)
            })
-        })
-    }
-    getJudgeLogin() {
-        console.log('0000<<<--', remote.getGlobal('loginState'))
-        if(remote.getGlobal('loginState')) {
-            return
-        }
-        let params = {url: host() + '/user/api/judge/login/'}
-        let self = this
-        axiosRequest(params).then((res) => {
-           console.log('res<<<<<', res)
-           self.getId('User_msg').innerHTML = res.detail
-        //    self.saveLoginState(res.detail)
-        }).catch((err) => {
-        //    self.saveLoginState(err.detail)
         })
     }
 }
