@@ -41,9 +41,6 @@
       "runAfterFinish": true,
       "installerIcon": "static/images/icon.ico"
     },
-    "dmg": {
-      "background": "static/images/background.png"
-    },
     "win": {
       "artifactName": "${productName}_setup_${version}.${ext}",
       "icon": "static/images/icon.ico"

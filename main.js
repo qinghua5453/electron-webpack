@@ -109,7 +109,7 @@ let createMainWindow = () => {
 let newTray = () => {
   let filePath
   if(process.platform === 'darwin') {
-    filePath = path.join(__dirname, '/static/images/background.png')
+    filePath = path.join(__dirname, '/static/images/icon.png')
   }else {
     filePath = path.join(__dirname, '/static/images/icon.ico')
   }
