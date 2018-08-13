@@ -1,5 +1,5 @@
 // index.js
-const { app, BrowserWindow, ipcMain, session, Tray } = require('electron')
+const { app, BrowserWindow, ipcMain, session, Tray, Menu } = require('electron')
 const path = require('path')
 const { autoUpdater } = require('electron-updater')
 const { host } = require('./client/src/config/host.js')
@@ -14,10 +14,7 @@ app.on('ready', () => {
 });
 
 app.on('window-all-closed', () => {
-  // 保证在所有窗口关闭后 进程被杀掉 否则报错
-  if (process.platform !== 'darwin') {
-      app.quit()
-  }
+
 })
 
 autoUpdater.autoDownload = false; //关闭自动更新 通过用户点击事件 发起是否更新
@@ -113,7 +110,13 @@ let newTray = () => {
   }else {
     filePath = path.join(__dirname, '/static/images/icon.ico')
   }
+  let trayMenuTemplate = [{
+    label: '退出',
+    click: () => { app.quit() }
+  }]
   tray = new Tray(filePath)
+  let contextMenu = Menu.buildFromTemplate(trayMenuTemplate);
+  tray.setContextMenu(contextMenu);
   tray.on('click', ()=>{
     if(mainWindow) mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
     if(childWindow) childWindow.isVisible() ? childWindow.hide() : childWindow.show()

@@ -95,14 +95,12 @@ class Menu {
         let self = this
         let user_wrap = this.getId('user-wrap')
         let timer
-        user_wrap.addEventListener('mouseenter', () => {
-            timer = setTimeout(function() {
-                self.getId('sub-ul').style.display = 'none'
-            }, 3000)
-        })
         user_wrap.addEventListener('mouseover', () => {
             clearInterval(timer)
             self.getId('sub-ul').style.display = 'block'
+            timer = setTimeout(function() {
+                self.getId('sub-ul').style.display = 'none'
+            }, 2000)
         })
     }
     gotoUserMsg () {
