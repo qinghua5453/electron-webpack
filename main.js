@@ -8,12 +8,16 @@ let childWindow = null;
 let mainLoadingWindow = null;
 let webviewLoadingWindow = null;
 let tray = null
+let isProduction = (process.env.NODE_ENV == 'development') ? false : true
 app.on('ready', () => {
   createWindow()
 });
 
 app.on('window-all-closed', () => {
-  // global.loginState = 'login'
+  // 保证在所有窗口关闭后 进程被杀掉 否则报错
+  if (process.platform !== 'darwin') {
+      app.quit()
+  }
 })
 
 autoUpdater.autoDownload = false; //关闭自动更新 通过用户点击事件 发起是否更新
@@ -69,7 +73,7 @@ let createMainWindow = () => {
     width: 563,
     height: 549,
     frame: false, // 隐藏窗口导航
-    resizable: true,
+    resizable: !isProduction ? true : false, //是否拖动改变窗口size
     show: false,
     webPreferences: {webSecurity: false}
   }
@@ -79,7 +83,7 @@ let createMainWindow = () => {
   mainLoadingWindow = new BrowserWindow(loadingOptions)
 
   mainLoadingWindow.loadURL(`file:///${__dirname}/client/index_loading.html`);
-  if(process.env.NODE_ENV == 'development') {
+  if(!isProduction) {
     mainWindow.loadURL('http://localhost:3000')
     mainWindow.webContents.openDevTools()
   }else {
@@ -134,7 +138,7 @@ let createWebviewWindow = () => {
 
   webviewLoadingWindow.loadURL(`file:///${__dirname}/client/index_loading.html`)
   childWindow.loadURL(`file:///${__dirname}/client/index_webview.html`) // 二级webview页面
-  if(process.env.NODE_ENV == 'development') { 
+  if(!isProduction) { 
     childWindow.webContents.openDevTools()
   }
 
