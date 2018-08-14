@@ -110,7 +110,7 @@
 }
 </style>
 <template>
-	<div id="syjh" draggable="true">
+	<div id="syjh">
 		<div class="homePage_bg">
             <span class="close" @click="hideMainWindow"></span>
 			<div class="content-wrap">
@@ -137,7 +137,6 @@
 const  { ipcRenderer, shell, remote } = require('electron')
 const Update = require('./config/update.js')
 const { host } = require('./config/host.js')
-const  Drag  = require('./config/drag.js')
 const { axiosRequest } = require('./config/axios-1.0.js')
 const session = remote.session
 
@@ -262,7 +261,6 @@ const session = remote.session
 		//   this.removeCookie('loginState')
 	 },
 	 mounted() {
-		let drag = new Drag('syjh')
 		let update = new Update()
 		this.getNameAndPassword()
 	 }
